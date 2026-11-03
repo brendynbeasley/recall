@@ -1,0 +1,36 @@
+# Builds the web app (tools/build-web.js) and publishes it to GitHub Pages on every push to main.
+# Optional sync config: set repository variables RECALL_SUPABASE_URL and RECALL_SUPABASE_ANON_KEY.
+name: Deploy web app
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build web/
+        run: node tools/build-web.js
+        env:
+          RECALL_SUPABASE_URL: ${{ vars.RECALL_SUPABASE_URL }}
+          RECALL_SUPABASE_ANON_KEY: ${{ vars.RECALL_SUPABASE_ANON_KEY }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,4 @@
+{ "version": "0.0.1", "configurations": [
+  { "name": "recall-web", "runtimeExecutable": "node", "runtimeArgs": ["tools/serve.js"], "port": 4777 },
+  { "name": "recall-web-build", "runtimeExecutable": "node", "runtimeArgs": ["tools/serve.js", "web", "4780"], "port": 4780 }
+] }
