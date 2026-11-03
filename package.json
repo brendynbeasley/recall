@@ -1,0 +1,55 @@
+{
+  "name": "recall-flashcards",
+  "productName": "Recall",
+  "version": "1.0.0",
+  "description": "Recall \u2014 a premium offline flashcards studio combining Quizlet-style study modes, Anki-style spaced repetition and games.",
+  "main": "electron/main.js",
+  "author": "Recall",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable",
+    "serve": "node tools/serve.js",
+    "build:web": "node tools/build-web.js"
+  },
+  "build": {
+    "appId": "app.recall.flashcards",
+    "productName": "Recall",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "src/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "compression": "maximum",
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "Recall.exe"
+    },
+    "portable": {
+      "artifactName": "Recall.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.2.1",
+    "electron-builder": "^26.18.0"
+  },
+  "dependencies": {
+    "jszip": "^3.10.2",
+    "sql.js": "^1.15.2",
+    "three": "^0.187.0"
+  }
+}
