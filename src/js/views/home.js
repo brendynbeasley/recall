@@ -93,7 +93,7 @@ export function render(main) {
       h('div', { class: 'hm2-card-term' }, c.term),
       c.deck ? h('div', { class: 'hm2-card-deck' }, h('i', {}), c.deck) : null);
   }));
-  const stack = h('button', { class: 'hm2-stack', 'aria-label': 'Start review', onClick: start }, stackInner);
+  const stack = h('button', { class: 'hm2-stack', 'aria-label': 'Start review', onClick: () => { if (reduced()) return start(); stack.classList.add('deal'); setTimeout(start, 280); } }, stackInner);
   stack.addEventListener('pointermove', e => { if (e.pointerType !== 'mouse' || reduced()) return; const r = stack.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; stackInner.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 12}deg)`; });
   stack.addEventListener('pointerleave', () => { stackInner.style.transform = ''; });
   const grid = h('div', { class: 'hm2-grid' }); inner.append(grid);
