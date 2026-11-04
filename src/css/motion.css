@@ -120,3 +120,6 @@ body.tabbar-mode .palette-foot { display: none; }
 
 body.reduced-motion :is(.cs-card, .cs-opt, .palette-box, .menu, .modal) { transition: opacity .2s ease !important; transform: none !important; }
 body.reduced-motion .main > .main-inner, body.reduced-motion .grid-auto.stagger > * { animation: none !important; }
+
+body.tabbar-mode .palette-input kbd { display: none; }
+body.tabbar-mode .palette { padding-top: 9vh; }
