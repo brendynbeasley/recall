@@ -13,9 +13,13 @@ import * as Match from '../games/match.js';
 import * as Gravity from '../games/gravity.js';
 import * as Memory from '../games/memory.js';
 import * as Blast from '../games/blast.js';
+import * as Unscramble from '../games/unscramble.js';
+import * as Reveal from '../games/reveal.js';
+import * as Survival from '../games/survival.js';
+import * as Confidence from '../games/confidence.js';
 import { stopSpeaking } from '../audio.js';
 
-const MODS = { flashcards: Flashcards, learn: Learn, test: Test, write: Write, spell: Spell, review: Review, match: Match, gravity: Gravity, memory: Memory, blast: Blast };
+const MODS = { flashcards: Flashcards, learn: Learn, test: Test, write: Write, spell: Spell, review: Review, match: Match, gravity: Gravity, memory: Memory, blast: Blast, unscramble: Unscramble, reveal: Reveal, survival: Survival, confidence: Confidence };
 let current = null;
 export async function render(main, route) {
   const mode = route.parts[0]; const deckId = route.parts[1];
