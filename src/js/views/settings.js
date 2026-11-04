@@ -71,7 +71,7 @@ export function render(main, route) {
         const tile = (v, label, desc) => h('button', { class: `ap-amb ${amb === v ? 'active' : ''}`, onClick: () => set({ ambient: v, backgroundFx: v !== 'off' }) }, h('div', { class: `ap-amb-pv ${v}` }, h('i', { class: 'o1' }), h('i', { class: 'o2' })), h('b', {}, label), h('span', {}, desc));
         body.append(h('div', { class: 'ap-amb-grid' }, tile('vivid', 'Vivid', 'Glowing colour'), tile('subtle', 'Subtle', 'A soft hint'), tile('off', 'Off', 'Solid and calm')),
           row('Frosted glass', h('div', {}, toggle(s.glass, v => set({ glass: v }), {})), 'Blur behind floating bars and panels.'),
-          row('Edge light', h('div', {}, toggle(s.edgeGlow !== false, v => set({ edgeGlow: v }), {})), 'A soft glow rising from the edges of key cards.'));
+          row('Edge light', h('div', {}, toggle(s.edgeGlow !== false, v => set({ edgeGlow: v }), {})), 'A soft line of light around the screen and key cards.'));
       } else if (apSection === 'text') {
         body.append(
           row('Text size', slider(Math.round(s.fontScale * 100), v => set({ fontScale: v / 100 }, false), { min: 80, max: 130, step: 5, format: v => `${v}%` })),
@@ -82,7 +82,7 @@ export function render(main, route) {
       } else {
         body.append(
           h('div', { class: 'ap-intro' }, h('div', { class: 'ap-row-t' }, 'Intro animation'), h('div', { class: 'ap-intro-grid' },
-            ...[['ember', 'Ember', 'Light rising from the edges'], ['classic', 'Classic', '3D flashcard galaxy'], ['off', 'Off', 'Open straight to Home']].map(([v, l, d]) => { const on = v === 'off' ? !s.showIntro : (s.showIntro && (s.introVariant || 'ember') === v); return h('button', { class: `ap-intro-opt ${on ? 'on' : ''}`, onClick: () => set(v === 'off' ? { showIntro: false } : { showIntro: true, introVariant: v }) }, h('span', { class: `ap-intro-pv ${v}` }, h('i', {})), h('b', {}, l), h('span', {}, d)); })),
+            ...[['ember', 'Edge', 'Light traces the screen'], ['classic', 'Classic', '3D flashcard galaxy'], ['off', 'Off', 'Open straight to Home']].map(([v, l, d]) => { const on = v === 'off' ? !s.showIntro : (s.showIntro && (s.introVariant || 'ember') === v); return h('button', { class: `ap-intro-opt ${on ? 'on' : ''}`, onClick: () => set(v === 'off' ? { showIntro: false } : { showIntro: true, introVariant: v }) }, h('span', { class: `ap-intro-pv ${v}` }, h('i', {})), h('b', {}, l), h('span', {}, d)); })),
             h('button', { class: 'btn btn-sm', style: { marginTop: '10px' }, disabled: !s.showIntro, onClick: () => playIntro({ accentHue: s.accentHue }) }, svgIcon('play', 14), 'Preview')),
           row('Animations', h('div', {}, toggle(s.animations, v => set({ animations: v }, false), {})), 'Transitions, card flips and springs.'),
           row('Reduce motion', h('div', {}, toggle(s.reducedMotion, v => set({ reducedMotion: v }, false), {})), 'No large movement, confetti or countdowns.'),
