@@ -143,7 +143,7 @@ export function render(main) {
     if (!inner.isConnected) { removeEventListener('resize', window.__hm2Fit); return; }
     inner.classList.remove('hm2-compact', 'hm2-flow');
     if (!matchMedia('(min-width: 901px) and (min-height: 600px)').matches) return;
-    const over = () => inner.scrollHeight > inner.clientHeight + 2 || [...inner.querySelectorAll('.ga-hero .hm2-today, .ga-tiles .hm2-tile, .ga-rhythm')].some(el => el.scrollHeight > el.clientHeight + 2);
+    const over = () => [...inner.querySelectorAll('.ga-hero .hm2-today, .ga-tiles .hm2-tile, .ga-rhythm')].some(el => el.scrollHeight > el.clientHeight + 2);
     if (!over()) return; inner.classList.add('hm2-compact');
     if (!over()) return; inner.classList.remove('hm2-compact'); inner.classList.add('hm2-flow');
   };
