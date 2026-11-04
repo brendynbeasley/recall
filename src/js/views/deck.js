@@ -23,6 +23,10 @@ export const GAMES = [
   { id: 'gravity', short: 'Stop the asteroids', name: 'Gravity', icon: 'rocket', desc: 'Type answers before the asteroids hit', color: '#f43f5e' },
   { id: 'memory', short: 'Find the pairs', name: 'Memory', icon: 'puzzle', desc: 'Concentration: find hidden pairs', color: '#a855f7' },
   { id: 'blast', short: 'Rapid true or false', name: 'Blast', icon: 'zap', desc: 'Rapid-fire true/false under time pressure', color: '#f97316' },
+  { id: 'unscramble', short: 'Rebuild the term', name: 'Unscramble', icon: 'shuffle', desc: 'Rebuild each term from scrambled pieces', color: '#06b6d4' },
+  { id: 'reveal', short: 'Fewer hints, more points', name: 'Reveal', icon: 'eye', desc: 'Name the term, uncovering letters only if needed', color: '#8b5cf6' },
+  { id: 'survival', short: 'Recall with 3 lives', name: 'Survival', icon: 'heart', desc: 'Type from memory; misses come back until fixed', color: '#ef4444' },
+  { id: 'confidence', short: 'Bet on what you know', name: 'Confidence', icon: 'target', desc: 'Answer, then bet how sure you are', color: '#10b981' },
 ];
 
 export function render(main, route) {
