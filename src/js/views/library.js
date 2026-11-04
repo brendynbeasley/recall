@@ -74,7 +74,9 @@ export function render(main, route) {
     s = { due, m, n, state }; stats.set(d.id, s); return s;
   };
   scope.forEach(statOf);
-  const totalDue = scope.reduce((a, d) => a + statOf(d).due, 0);
+  // Outside a folder, the header shows the real session size (global daily limits applied), the same number
+  // Home shows. Per-set counts can't simply be summed: each set applies its own new-card limit.
+  const totalDue = folder ? scope.reduce((a, d) => a + statOf(d).due, 0) : (() => { try { const c = dueCounts(null); return c.new + c.learn + c.review; } catch (e) { return 0; } })();
   const matchesFilter = (d, f) => { const s = statOf(d); return f === 'all' || (f === 'due' ? s.due > 0 : s.state === f); };
 
   const inner = h('div', { class: 'main-inner lb' });
