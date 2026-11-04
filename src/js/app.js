@@ -170,7 +170,7 @@ export function openPalette(initial = '', opts = {}) {
   paletteEl = h('div', { class: 'palette' }, h('div', { class: 'palette-box' }, h('div', { class: 'palette-input' }, svgIcon('search', 18), input, h('kbd', {}, 'Esc')), list, h('div', { class: 'palette-foot' }, h('span', {}, '↑↓ navigate'), h('span', {}, '↵ select'), h('span', {}, 'Esc close'))));
   document.body.append(paletteEl); if (opts.origin) { const o = opts.origin.getBoundingClientRect(), b = paletteEl.querySelector('.palette-box').getBoundingClientRect(); paletteEl.querySelector('.palette-box').style.transformOrigin = `${o.left + o.width / 2 - b.left}px ${o.top + o.height / 2 - b.top}px`; paletteEl.classList.add('from-origin'); } requestAnimationFrame(() => requestAnimationFrame(() => paletteEl && paletteEl.classList.add('show'))); input.focus();
   const close = () => { if (!paletteEl) return; paletteEl.classList.remove('show'); const el = paletteEl; paletteEl = null; setTimeout(() => el.remove(), 320); };
-  paletteEl.addEventListener('mousedown', e => { if (e.target === paletteEl) close(); });
+  const openedAt = performance.now(); paletteEl.addEventListener('mousedown', e => { if (e.target === paletteEl && performance.now() - openedAt > 450) close(); });
   let items = [], active = 0;
   const actions = () => [
     { title: 'Create new set', sub: 'Editor', icon: 'plus', run: () => navigate('new'), kw: 'new create set deck' },
