@@ -35,7 +35,7 @@ export function initMotion() {
   const main = () => document.getElementById('main');
   function scan() {
     if (title) { title.style.transform = ''; title.style.opacity = ''; }
-    const m = main(); title = m && m.querySelector('.page-title, .hm2-greet, .sd-title, .set-title');
+    const m = main(); title = m && m.querySelector('.page-title, .hx-greet, .hm2-greet, .sd-title, .set-title');
     head.classList.remove('on'); head.querySelector('.sh-title').textContent = title ? title.textContent.trim() : '';
     if (title) { const mr = m.getBoundingClientRect(), tr = title.getBoundingClientRect(); titleTop = tr.bottom - mr.top + m.scrollTop; }
     place(); update();
