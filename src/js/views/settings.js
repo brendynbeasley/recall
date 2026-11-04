@@ -10,6 +10,7 @@ import { createBackup, exportAllJson, showExportDialog } from '../exporters.js';
 import { showImportDialog, restoreBackupFlow } from '../importers.js';
 import { renderSyncSettings } from './syncsettings.js';
 
+let apSection = 'theme', apFilter = 'all';
 const FONTS = ['System', 'Segoe UI', 'Inter', 'Georgia', 'Cambria', 'Times New Roman', 'Verdana', 'Trebuchet MS', 'Calibri', 'Consolas', 'Comic Sans MS', 'Palatino Linotype', 'Garamond', 'Arial Rounded MT Bold'];
 
 // Mini app mock rendered with a theme's own tokens (data-theme scopes the CSS variables to this element)
@@ -32,46 +33,57 @@ export function render(main, route) {
       const amb = s.ambient || (s.backgroundFx === false ? 'off' : 'vivid');
       const set = (patch, redraw = true) => { updateSettings(patch); applyTheme(); if (redraw) draw(); };
       const touch = document.body.classList.contains('tabbar-mode');
-      // Live preview (uses the live CSS tokens, so it always matches)
-      const preview = h('div', { class: 'ap-preview' },
+      const current = THEMES.find(t => t.id === s.theme) || (s.customThemes || []).find(t => t.id === s.theme);
+      // ---- Left: live preview (sticky) ----
+      const preview = h('div', { class: 'ap-preview big' },
         h('div', { class: 'ap-pv-bg' }, h('i', { class: 'o1' }), h('i', { class: 'o2' })),
         h('div', { class: 'ap-pv-card' }, h('div', { class: 'ap-pv-eyebrow' }, 'Today'), h('div', { class: 'ap-pv-big' }, '22', h('span', {}, ' cards')), h('div', { class: 'ap-pv-sub' }, 'About 3 min · 20 new'), h('div', { class: 'ap-pv-btn' }, svgIcon('play', 12), 'Start review')),
         h('div', { class: 'ap-pv-side' },
           h('div', { class: 'ap-pv-row' }, h('i', {}), h('div', {}, h('b', {}, 'Bonds & Interest Rates'), h('span', {}, '48 cards · 62% mastered'))),
           h('div', { class: 'ap-pv-row' }, h('i', { style: { background: 'var(--ok)' } }), h('div', {}, h('b', {}, 'Computer Science'), h('span', {}, '20 cards · 35% mastered'))),
           h('div', { class: 'ap-pv-tabs' }, h('span', { class: 'on' }), h('span', {}), h('em', {}), h('span', {}), h('span', {}))));
-      const current = THEMES.find(t => t.id === s.theme) || (s.customThemes || []).find(t => t.id === s.theme);
-      inner.append(h('div', { class: 'ap-hero' }, preview, h('div', { class: 'ap-hero-text' }, h('div', { class: 'ap-eyebrow' }, 'Live preview'), h('h2', {}, current ? current.name : 'Theme'), h('p', {}, 'Every change applies instantly, everywhere in Recall.'), h('button', { class: 'btn btn-sm btn-ghost', onClick: resetAppearance }, svgIcon('refresh', 14), 'Reset to default'))));
-      // Themes, grouped
-      const card = t => h('button', { class: `ap-theme ${s.theme === t.id ? 'active' : ''}`, onClick: () => set({ theme: t.id }) }, t.id === 'system' ? h('div', { class: 'theme-swatch split' }, themeSwatch('light'), themeSwatch('dark')) : themeSwatch(t.id), h('div', { class: 'ap-theme-name' }, h('span', {}, t.name), s.theme === t.id ? svgIcon('check', 14) : null));
-      const ess = ['system', 'light', 'dark', 'black'];
-      const groups = [['Essentials', ess], ['Dark', THEMES.filter(t => t.dark === true && !ess.includes(t.id)).map(t => t.id)], ['Light', THEMES.filter(t => t.dark === false && !ess.includes(t.id)).map(t => t.id)]];
-      const customCards = [...(s.customThemes || []).map(t => h('button', { class: `ap-theme ${s.theme === t.id ? 'active' : ''}`, onClick: () => set({ theme: t.id }), onContextmenu: async e => { e.preventDefault(); if (await confirm(`Delete custom theme "${t.name}"?`, { danger: true })) set({ customThemes: s.customThemes.filter(x => x.id !== t.id), theme: s.theme === t.id ? 'dark' : s.theme }); } }, themeSwatch(t.base, t.vars), h('div', { class: 'ap-theme-name' }, h('span', {}, t.name)))),
-        h('button', { class: 'ap-theme add', onClick: customThemeDialog }, h('div', { class: 'theme-swatch ap-add' }, svgIcon('plus', 22)), h('div', { class: 'ap-theme-name' }, h('span', {}, 'Create your own')))];
-      inner.append(sec('Theme', null, ...groups.map(([g, ids]) => h('div', { class: 'ap-group' }, h('div', { class: 'ap-label' }, g), h('div', { class: 'ap-theme-grid' }, ...ids.map(id => THEMES.find(t => t.id === id)).filter(Boolean).map(card)))), h('div', { class: 'ap-group' }, h('div', { class: 'ap-label' }, 'Your themes'), h('div', { class: 'ap-theme-grid' }, ...customCards))));
-      // Accent
-      const owns = THEME_OWNS_ACCENT.includes(s.theme);
-      const accentRow = h('div', { class: 'ap-accents' }, ...ACCENTS.map(x => h('button', { class: `ap-accent ${s.accentPreset === x.id ? 'active' : ''}`, style: { '--c': x.hex }, 'aria-label': x.id, onClick: () => set({ accentPreset: x.id, accentHue: x.hue }) })), h('label', { class: 'ap-accent custom', 'aria-label': 'Any colour' }, svgIcon('palette', 15), h('input', { type: 'color', value: '#6366f1', onInput: e => { const [hue] = hexToHsl(e.target.value); set({ accentPreset: 'custom', accentHue: hue }, false); } })));
-      inner.append(sec('Accent colour', owns && !s.accentOverride ? 'This theme comes with its own accent. Turn on the switch below to use yours instead.' : 'Buttons, highlights and progress bars.', accentRow,
-        settingRow('Fine-tune', slider(s.accentHue, v => set({ accentHue: v, accentPreset: 'custom' }, false), { min: 0, max: 360, step: 1, format: v => `${v}°` })),
-        toggle(!!s.accentOverride, v => set({ accentOverride: v }), { label: 'Use my accent on every theme', description: 'Overrides the built-in accents of Nord, Mocha, Sakura and the rest.' })));
-      // Background
-      const ambTile = (v, label, desc) => h('button', { class: `ap-amb ${amb === v ? 'active' : ''}`, onClick: () => set({ ambient: v, backgroundFx: v !== 'off' }) }, h('div', { class: `ap-amb-pv ${v}` }, h('i', { class: 'o1' }), h('i', { class: 'o2' })), h('b', {}, label), h('span', {}, desc));
-      inner.append(sec('Background', null, h('div', { class: 'ap-amb-grid' }, ambTile('vivid', 'Vivid', 'Glowing colour'), ambTile('subtle', 'Subtle', 'A soft hint of colour'), ambTile('off', 'Off', 'Solid and calm')),
-        toggle(s.glass, v => set({ glass: v }, false), { label: 'Frosted glass', description: 'Blur behind floating bars and panels.' })));
-      // Text & shape
-      inner.append(sec('Text & shape', null,
-        settingRow('Text size', slider(Math.round(s.fontScale * 100), v => set({ fontScale: v / 100 }, false), { min: 80, max: 130, step: 5, format: v => `${v}%` })),
-        settingRow('Corner roundness', slider(s.radius, v => set({ radius: v }, false), { min: 0, max: 28, format: v => `${v}px` })),
-        settingRow('Density', segmented([{ value: 'compact', label: 'Compact' }, { value: 'comfortable', label: 'Comfortable' }, { value: 'spacious', label: 'Spacious' }], s.density, v => set({ density: v }, false))),
-        settingRow('Interface font', select(FONTS.map(f => ({ value: f, label: f })), s.uiFont, v => set({ uiFont: v }, false))),
-        settingRow('Flashcard font', select(FONTS.map(f => ({ value: f, label: f })), s.cardFont, v => set({ cardFont: v }, false)), 'Used on card faces while studying.')));
-      // Motion
-      inner.append(sec('Motion & feedback', null,
-        toggle(s.animations, v => set({ animations: v }, false), { label: 'Animations', description: 'Page transitions, card flips and button springs.' }),
-        toggle(s.reducedMotion, v => set({ reducedMotion: v }, false), { label: 'Reduce motion', description: 'Turns off large movement, confetti and countdowns.' }),
-        toggle(s.confetti, v => updateSettings({ confetti: v }), { label: 'Celebrations', description: 'Confetti when you finish a session or hit a goal.' }),
-        touch ? null : toggle(s.keyboardHints, v => updateSettings({ keyboardHints: v }), { label: 'Keyboard hints', description: 'Show shortcut keys on buttons in study modes.' })));
+      const left = h('div', { class: 'ap-left' }, preview,
+        h('div', { class: 'ap-caption' }, h('div', {}, h('div', { class: 'ap-eyebrow' }, 'Live preview'), h('div', { class: 'ap-cap-name' }, current ? current.name : 'Theme'), h('div', { class: 'ap-cap-meta' }, [amb === 'off' ? 'Solid background' : amb === 'subtle' ? 'Subtle glow' : 'Vivid glow', `${Math.round(s.fontScale * 100)}% text`, s.uiFont].join(' · '))),
+          h('button', { class: 'ap-reset', 'aria-label': 'Reset appearance', onClick: resetAppearance }, svgIcon('refresh', 15), 'Reset')));
+      // ---- Right: tabbed control panel ----
+      const sections = [['theme', 'Theme', 'palette'], ['colour', 'Colour', 'sparkles'], ['background', 'Background', 'layers'], ['text', 'Text', 'type'], ['motion', 'Motion', 'zap']];
+      const seg = h('div', { class: 'ap-seg' }, ...sections.map(([id, label, icon]) => h('button', { class: `ap-seg-btn ${apSection === id ? 'on' : ''}`, onClick: () => { apSection = id; draw(); } }, svgIcon(icon, 15), h('span', {}, label))));
+      const body = h('div', { class: 'ap-body' });
+      const row = (label, control, hint) => h('div', { class: 'ap-row' }, h('div', { class: 'ap-row-l' }, h('div', { class: 'ap-row-t' }, label), hint ? h('div', { class: 'ap-row-h' }, hint) : null), h('div', { class: 'ap-row-c' }, control));
+      const sw = (id, vars) => h('span', { class: 'ap-chip-sw', 'data-theme': id, style: vars || {} }, h('i', { class: 'bg' }), h('i', { class: 'sf' }), h('i', { class: 'ac' }));
+      if (apSection === 'theme') {
+        const filters = [['all', 'All'], ['dark', 'Dark'], ['light', 'Light']];
+        const list = THEMES.filter(t => apFilter === 'all' || t.id === 'system' || (apFilter === 'dark' ? t.dark === true : t.dark === false));
+        body.append(h('div', { class: 'ap-filter' }, ...filters.map(([id, l]) => h('button', { class: `ap-filter-btn ${apFilter === id ? 'on' : ''}`, onClick: () => { apFilter = id; draw(); } }, l))),
+          h('div', { class: 'ap-chips' },
+            ...list.map(t => h('button', { class: `ap-chip ${s.theme === t.id ? 'on' : ''}`, onClick: () => set({ theme: t.id }) }, t.id === 'system' ? h('span', { class: 'ap-chip-sw split' }, sw('light'), sw('dark')) : sw(t.id), h('span', { class: 'ap-chip-n' }, t.name), s.theme === t.id ? svgIcon('check', 14) : null)),
+            ...(s.customThemes || []).map(t => h('button', { class: `ap-chip ${s.theme === t.id ? 'on' : ''}`, onClick: () => set({ theme: t.id }), onContextmenu: async e => { e.preventDefault(); if (await confirm(`Delete custom theme "${t.name}"?`, { danger: true })) set({ customThemes: s.customThemes.filter(x => x.id !== t.id), theme: s.theme === t.id ? 'dark' : s.theme }); } }, sw(t.base, t.vars), h('span', { class: 'ap-chip-n' }, t.name))),
+            h('button', { class: 'ap-chip add', onClick: customThemeDialog }, h('span', { class: 'ap-chip-sw plus' }, svgIcon('plus', 14)), h('span', { class: 'ap-chip-n' }, 'Create your own'))));
+      } else if (apSection === 'colour') {
+        const owns = THEME_OWNS_ACCENT.includes(s.theme);
+        body.append(
+          h('div', { class: 'ap-accents' }, ...ACCENTS.map(x => h('button', { class: `ap-accent ${s.accentPreset === x.id ? 'active' : ''}`, style: { '--c': x.hex }, 'aria-label': x.id, onClick: () => set({ accentPreset: x.id, accentHue: x.hue }) })), h('label', { class: 'ap-accent custom', 'aria-label': 'Any colour' }, svgIcon('palette', 15), h('input', { type: 'color', value: '#6366f1', onInput: e => { const [hue] = hexToHsl(e.target.value); set({ accentPreset: 'custom', accentHue: hue }, false); } }))),
+          row('Fine-tune', slider(s.accentHue, v => set({ accentHue: v, accentPreset: 'custom' }, false), { min: 0, max: 360, step: 1, format: v => `${v}°` })),
+          row('Use my accent everywhere', h('div', {}, toggle(!!s.accentOverride, v => set({ accentOverride: v }), {})), owns ? 'This theme has its own accent. Turn on to use yours.' : 'Overrides themes with built-in accents.'));
+      } else if (apSection === 'background') {
+        const tile = (v, label, desc) => h('button', { class: `ap-amb ${amb === v ? 'active' : ''}`, onClick: () => set({ ambient: v, backgroundFx: v !== 'off' }) }, h('div', { class: `ap-amb-pv ${v}` }, h('i', { class: 'o1' }), h('i', { class: 'o2' })), h('b', {}, label), h('span', {}, desc));
+        body.append(h('div', { class: 'ap-amb-grid' }, tile('vivid', 'Vivid', 'Glowing colour'), tile('subtle', 'Subtle', 'A soft hint'), tile('off', 'Off', 'Solid and calm')),
+          row('Frosted glass', h('div', {}, toggle(s.glass, v => set({ glass: v }), {})), 'Blur behind floating bars and panels.'));
+      } else if (apSection === 'text') {
+        body.append(
+          row('Text size', slider(Math.round(s.fontScale * 100), v => set({ fontScale: v / 100 }, false), { min: 80, max: 130, step: 5, format: v => `${v}%` })),
+          row('Corner roundness', slider(s.radius, v => set({ radius: v }, false), { min: 0, max: 28, format: v => `${v}px` })),
+          row('Density', segmented([{ value: 'compact', label: 'Compact' }, { value: 'comfortable', label: 'Comfy' }, { value: 'spacious', label: 'Spacious' }], s.density, v => set({ density: v }, false))),
+          row('Interface font', select(FONTS.map(f => ({ value: f, label: f })), s.uiFont, v => set({ uiFont: v }))),
+          row('Flashcard font', select(FONTS.map(f => ({ value: f, label: f })), s.cardFont, v => set({ cardFont: v }, false)), 'Used on card faces while studying.'));
+      } else {
+        body.append(
+          row('Animations', h('div', {}, toggle(s.animations, v => set({ animations: v }, false), {})), 'Transitions, card flips and springs.'),
+          row('Reduce motion', h('div', {}, toggle(s.reducedMotion, v => set({ reducedMotion: v }, false), {})), 'No large movement, confetti or countdowns.'),
+          row('Celebrations', h('div', {}, toggle(s.confetti, v => updateSettings({ confetti: v }), {})), 'Confetti when you finish or hit a goal.'),
+          touch ? null : row('Keyboard hints', h('div', {}, toggle(s.keyboardHints, v => updateSettings({ keyboardHints: v }), {})), 'Shortcut keys on study buttons.'));
+      }
+      inner.append(h('div', { class: 'ap-studio' }, left, h('div', { class: 'ap-panel' }, seg, body)));
     } else if (tab === 'study') {
       inner.append(sec('Daily goals', 'Shown on your home dashboard and used for streaks and achievements.',
         settingRow('Cards per day', numberInput(s.dailyGoalCards, v => updateSettings({ dailyGoalCards: v }), { min: 1, max: 5000 })),
