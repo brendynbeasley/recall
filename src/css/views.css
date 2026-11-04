@@ -485,3 +485,17 @@ html[data-theme="black"] .ap-pv-bg { display: none; }
   .ap-fit .ap-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
   .ap-fit .page-head { margin-bottom: 12px; }
 }
+
+/* Settings: icon tab bar */
+.tabs.icon-tabs { display: inline-flex; align-self: flex-start; gap: 4px; padding: 5px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); margin-bottom: 18px; overflow: visible; max-width: 100%; }
+.icon-tabs .tab { font-size: 0; gap: 0; height: 42px; min-width: 46px; justify-content: center; padding: 0 12px; border: 0; margin: 0; border-radius: 12px; color: var(--text-muted); transition: background var(--t-fast), color var(--t-fast); }
+.icon-tabs .tab .icon { width: 19px; height: 19px; }
+.icon-tabs .tab:hover { color: var(--text); background: var(--surface-2); }
+.icon-tabs .tab.active { font-size: .88rem; gap: 8px; padding: 0 16px; color: var(--text); background: var(--surface-3); border: 0; }
+.icon-tabs .tab.active .icon { color: var(--accent); }
+/* Appearance panel tabs: icons, label on the active one */
+.ap-seg { grid-template-columns: none; display: flex; justify-content: space-between; }
+.ap-seg-btn { flex: 1; flex-direction: row; justify-content: center; gap: 0; height: 40px; padding: 0 8px; }
+.ap-seg-btn span { display: none; }
+.ap-seg-btn.on { flex: 2.2; gap: 7px; } .ap-seg-btn.on span { display: inline; font-size: .82rem; }
+.ap-seg-btn .icon { width: 18px; height: 18px; }
