@@ -255,7 +255,7 @@ async function boot() {
 }
 function showWelcome() {
   const m = modal({ title: false, size: 'md', className: 'welcome-modal', closable: true, content: h('div', { class: 'welcome' },
-    h('div', { class: 'welcome-hero' }, h('div', { class: 'intro-logo', style: { animation: 'none', opacity: 1, width: '64px', height: '64px' } }), h('h2', {}, 'Welcome to Recall'), h('p', {}, 'Your complete, offline study studio. Flashcards, Learn, Test, Write, Spell, spaced repetition and five games, with every option customizable.')),
+    h('div', { class: 'welcome-hero' }, h('div', { class: 'intro-logo', style: { animation: 'none', opacity: 1, width: '64px', height: '64px' } }), h('h2', {}, 'Welcome to Recall'), h('p', {}, 'Your complete, offline study studio. Flashcards, Learn, Test, Write, Spell, spaced repetition and nine games, with every option customizable.')),
     h('div', { class: 'welcome-grid' },
       h('div', { class: 'welcome-item' }, svgIcon('cards', 20), h('div', {}, h('b', {}, 'Sample sets are ready'), h('p', {}, 'Four sets were added so you can explore every mode right away.'))),
       h('div', { class: 'welcome-item' }, svgIcon('upload', 20), h('div', {}, h('b', {}, 'Bring your own'), h('p', {}, 'Import Quizlet exports, CSV/TSV, Anki .apkg packages or paste text.'))),
