@@ -228,3 +228,11 @@
   .study-stats { gap: 6px; flex-shrink: 0; } .stat-chip { min-width: 0; padding: 3px 8px; }
   .study-progress { margin: 0 12px; } .study-body { padding: 14px 12px calc(24px + env(safe-area-inset-bottom)); }
 }
+
+/* Memory: fit the whole board on screen, no scrolling */
+.study-body:has(.memory-wrap) { overflow: hidden; padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+.memory-wrap { flex: 1; min-height: 0; width: 100%; max-width: 1200px; }
+.memory-grid { flex: 1; min-height: 0; grid-auto-rows: minmax(0, 1fr); gap: clamp(6px, 1.2vh, 12px); }
+.memory-card { min-height: 0; aspect-ratio: auto; height: 100%; }
+.mem-back .icon { width: 22px; height: 22px; }
+.mem-text { font-size: clamp(.72rem, 1.6vh, .92rem); }
