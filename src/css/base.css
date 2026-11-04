@@ -292,3 +292,24 @@ body.zen:not(.study-mode) .zen-exit { display: block; }
 #app { bottom: calc(-1 * env(safe-area-inset-bottom)); }
 .sidebar { padding-bottom: calc(14px + 2 * env(safe-area-inset-bottom)); }
 .main { padding-bottom: calc(2 * env(safe-area-inset-bottom)); }
+
+
+/* ===== Touch devices (iPad): no titlebar/sidebar, floating bottom tab bar ===== */
+.tabbar { display: none; }
+body.tabbar-mode { --titlebar-h: 0px; }
+body.tabbar-mode #app { grid-template-rows: 0 1fr; }
+body.tabbar-mode .titlebar { display: none !important; }
+body.tabbar-mode .shell, body.tabbar-mode.sidebar-collapsed .shell { grid-template-columns: 1fr !important; }
+body.tabbar-mode .sidebar { display: none !important; }
+body.tabbar-mode .main { padding-top: calc(max(env(safe-area-inset-top), 24px) + 10px); padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+body.tabbar-mode.study-mode .main, body.tabbar-mode.zen .main { padding-bottom: env(safe-area-inset-bottom); }
+body.tabbar-mode .tabbar { display: flex; position: fixed; z-index: 65; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom)); align-items: center; gap: 4px; padding: 6px; border-radius: 999px; background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(24px) saturate(1.4); -webkit-backdrop-filter: blur(24px) saturate(1.4); border: 1px solid var(--border-strong); box-shadow: 0 10px 40px rgba(0,0,0,.35); }
+body.tabbar-mode.study-mode .tabbar, body.tabbar-mode.zen .tabbar, body.intro-playing .tabbar { display: none; }
+.tab-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; width: 78px; height: 54px; border-radius: 999px; background: none; border: 0; color: var(--text-muted); cursor: pointer; transition: background var(--t-fast), color var(--t-fast); }
+.tab-item .tab-label { font-size: .64rem; font-weight: 600; letter-spacing: .02em; }
+.tab-item.active { background: var(--surface-3); color: var(--text); }
+.tab-item:active { transform: scale(.95); }
+.tab-badge { position: absolute; top: 4px; left: calc(50% + 8px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--accent); color: #fff; font-size: .62rem; font-weight: 800; display: grid; place-items: center; line-height: 1; }
+.tab-create { width: 54px; height: 54px; margin: 0 6px; border-radius: 50%; border: 0; display: grid; place-items: center; background: var(--accent); color: #fff; cursor: pointer; box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 45%, transparent); }
+.tab-create:active { transform: scale(.94); }
+@media (max-width: 560px) { .tab-item { width: 56px; } .tab-item .tab-label { display: none; } }

@@ -31,6 +31,7 @@
     </div>
   </div>
   <button id="zen-exit" class="zen-exit" aria-label="Exit Zen mode">Exit Zen</button>
+  <nav id="tabbar" class="tabbar" aria-label="Main"></nav>
   <div id="intro-root"></div>
   <script>['gesturestart','gesturechange'].forEach(function(e){document.addEventListener(e,function(ev){ev.preventDefault();},{passive:false});});document.addEventListener('touchmove',function(e){if(e.touches.length>1)e.preventDefault();},{passive:false});</script>
   <script src="config.js"></script>

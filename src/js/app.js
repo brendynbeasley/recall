@@ -72,7 +72,7 @@ async function render() {
   const main = $('#main'); main.innerHTML = ''; main.scrollTop = 0;
   document.body.classList.toggle('study-mode', r.name === 'study'); app.studyActive = r.name === 'study';
   try { app.cleanup = await view.render(main, r) || null; } catch (e) { console.error(e); main.append(h('div', { class: 'main-inner' }, h('div', { class: 'panel' }, h('h2', {}, 'Something went wrong'), h('p', { class: 'muted' }, String(e && e.message || e)), h('button', { class: 'btn', onClick: () => navigate('home') }, 'Go home')))); }
-  renderSidebar();
+  renderSidebar(); renderTabbar();
 }
 window.addEventListener('hashchange', render);
 
@@ -92,7 +92,7 @@ function renderTitlebar() {
     h('button', { title: 'Close', class: 'close', onClick: () => native && native.close() }, h('span', { html: '<svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10" stroke="currentColor" stroke-width="1.1"/></svg>' })));
   tb.append(brand, center, controls);
   if (native) { native.onWindowState(st => { if (st.fullscreen !== undefined) document.body.classList.toggle('fullscreen', st.fullscreen); if (st.maximized !== undefined) document.body.classList.toggle('maximized', st.maximized); }); native.windowState().then(st => { document.body.classList.toggle('fullscreen', !!st.fullscreen); document.body.classList.toggle('maximized', !!st.maximized); }); }
-  else { document.body.classList.add('web'); if (navigator.standalone || matchMedia('(display-mode: standalone)').matches) document.body.classList.add('standalone'); const zx = document.getElementById('zen-exit'); if (zx) zx.addEventListener('click', toggleZen); document.addEventListener('fullscreenchange', () => document.body.classList.toggle('fullscreen', !!document.fullscreenElement)); }
+  else { document.body.classList.add('web'); { const mq = matchMedia('(hover: none) and (pointer: coarse)'); const applyTouch = () => { document.body.classList.toggle('tabbar-mode', mq.matches); renderTabbar(); }; applyTouch(); mq.addEventListener?.('change', applyTouch); } if (navigator.standalone || matchMedia('(display-mode: standalone)').matches) document.body.classList.add('standalone'); const zx = document.getElementById('zen-exit'); if (zx) zx.addEventListener('click', toggleZen); document.addEventListener('fullscreenchange', () => document.body.classList.toggle('fullscreen', !!document.fullscreenElement)); }
 }
 // Titlebar cloud icon: shows sync state, opens Settings → Sync
 const SYNC_TIPS = { off: 'Cloud sync is off', unlinked: 'Finish setting up sync', syncing: 'Syncing…', ok: 'Synced', offline: 'Offline. Will sync later', error: 'Sync problem' };
@@ -264,3 +264,20 @@ function showWelcome() {
     h('div', { class: 'row', style: { justifyContent: 'center', gap: '10px', marginTop: '20px' } }, h('button', { class: 'btn btn-lg', onClick: () => { m.close(); showImportDialog(); } }, svgIcon('upload', 18), 'Import'), h('button', { class: 'btn btn-primary btn-lg', onClick: () => m.close() }, 'Start exploring', svgIcon('arrowRight', 18)))) });
 }
 boot();
+
+
+// ---------- Bottom tab bar (touch devices such as iPad) ----------
+export function renderTabbar() {
+  const tb = document.getElementById('tabbar'); if (!tb) return; tb.innerHTML = '';
+  if (!document.body.classList.contains('tabbar-mode')) return;
+  const r = app.route || {}; let totalDue = 0; try { const c = dueCounts(null); totalDue = c.new + c.learn + c.review; } catch (e) { /* */ }
+  const active = n => r.name === n || (n === 'library' && (r.name === 'folder' || r.name === 'set' || r.name === 'edit')) || (n === 'stats' && (r.name === 'achievements')) || (n === 'search' && r.name === 'browser');
+  const item = (n, icon, label, onClick, badge) => h('button', { class: `tab-item ${active(n) ? 'active' : ''}`, 'aria-label': label, onClick }, svgIcon(icon, 22), h('span', { class: 'tab-label' }, label), badge ? h('span', { class: 'tab-badge' }, badge > 99 ? '99+' : badge) : null);
+  tb.append(
+    item('home', 'home', 'Home', () => navigate('home'), totalDue || null),
+    item('library', 'library', 'Library', () => navigate('library')),
+    h('button', { class: 'tab-create', 'aria-label': 'Create', onClick: () => createSetFlow() }, svgIcon('plus', 24)),
+    item('search', 'search', 'Search', () => openPalette()),
+    item('stats', 'stats', 'Stats', () => navigate('stats')),
+    item('settings', 'settings', 'Settings', () => navigate('settings')));
+}
