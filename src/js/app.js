@@ -244,7 +244,7 @@ async function boot() {
   initSync();
   // Hosted web app: cache files for offline use (not in Electron, which loads from disk)
   if (!native && 'serviceWorker' in navigator && /^https?:$/.test(location.protocol)) { const hadController = !!navigator.serviceWorker.controller; let reloading = false;
-    const reloadNow = () => { if (reloading) return; reloading = true; location.reload(); };
+    const reloadNow = () => { if (reloading) return; if (document.body.classList.contains('intro-playing')) { setTimeout(reloadNow, 400); return; } reloading = true; try { sessionStorage.setItem('recallSkipIntro', '1'); } catch (e) { /* */ } location.reload(); };
     navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadController) return; if (app.studyActive) { const once = () => { if (!app.studyActive) { removeEventListener('hashchange', once); reloadNow(); } }; addEventListener('hashchange', once); } else reloadNow(); });
     navigator.serviceWorker.register('sw.js').then(r => { document.addEventListener('visibilitychange', () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(e => console.warn('service worker', e)); }
   const s = S(); const firstRun = !s.onboarded;
@@ -259,7 +259,8 @@ async function boot() {
     // Keep the sidebar due counts fresh around the day rollover
     setInterval(() => { if (!app.studyActive) renderSidebar(); }, 60000);
   };
-  if (s.showIntro) playIntro({ accentHue: s.accentHue, onDone: start }); else start();
+  let skipOnce = false; try { skipOnce = sessionStorage.getItem('recallSkipIntro') === '1'; sessionStorage.removeItem('recallSkipIntro'); } catch (e) { /* */ }
+  if (s.showIntro && !skipOnce) playIntro({ accentHue: s.accentHue, onDone: start }); else start();
 }
 function showWelcome() {
   const m = modal({ title: false, size: 'md', className: 'welcome-modal', closable: true, content: h('div', { class: 'welcome' },

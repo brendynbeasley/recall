@@ -63,7 +63,7 @@
     if (Date.now() - last < 30000) return;
     try { sessionStorage.setItem('vpReloadAt', String(Date.now())); } catch (e) { return; }
     location.reload();
-  }, 2200);
+  }, 380);
   // Safety net: check every few seconds while visible (cheap; does nothing unless the viewport is short).
   setInterval(function () { if (!document.hidden) heal(); }, 4000);
 })();
