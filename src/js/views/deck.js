@@ -33,29 +33,29 @@ export function render(main, route) {
   const draw = () => {
     inner.innerHTML = '';
     const notes = deckNotes(deck.id); const pairs = notes.flatMap(n => notePairs(n)); const m = deckMastery(deck.id); const due = dueCounts(deck.id, deck); const dueTotal = due.new + due.learn + due.review; const ret = retentionStats(deck.id, 30);
-    // Header
-    inner.append(h('div', { class: 'set-head', style: { '--deck-color': deck.color || 'var(--accent)' } },
-      h('div', { class: 'set-head-main' }, h('div', { class: 'row', style: { gap: '8px', marginBottom: '6px' } }, deck.folderId && db.folders.get(deck.folderId) ? h('button', { class: 'crumb', onClick: () => navigate(`folder/${deck.folderId}`) }, svgIcon('folder', 13), db.folders.get(deck.folderId).name) : h('button', { class: 'crumb', onClick: () => navigate('library') }, svgIcon('library', 13), 'Library'), h('span', { class: 'faint' }, '/')),
-        h('h1', { class: 'set-title' }, h('span', { class: 'set-dot' }), deck.name, deck.pinned ? h('span', { class: 'badge soft', style: { marginLeft: '10px', verticalAlign: 'middle' } }, 'Pinned') : null),
-        deck.description ? h('p', { class: 'set-desc' }, deck.description) : null,
-        h('div', { class: 'set-meta' }, h('span', { class: 'pill-stat' }, svgIcon('cards', 14), plural(pairs.length, 'card')), h('span', { class: 'pill-stat' }, svgIcon('award', 14), `${Math.round(m.pct * 100)}% mastered`), h('span', { class: 'pill-stat' }, svgIcon('clock', 14), deck.lastStudied ? `Studied ${fmtRelative(deck.lastStudied)}` : 'Not studied yet'), ret.retention != null ? h('span', { class: 'pill-stat' }, svgIcon('target', 14), `${Math.round(ret.retention * 100)}% retention`) : null, h('span', { class: 'pill-stat' }, svgIcon('star', 14), `${notes.filter(n => n.starred).length} starred`))),
-      h('div', { class: 'set-head-actions' }, h('button', { class: 'btn', onClick: () => navigate(`edit/${deck.id}`) }, svgIcon('edit', 16), 'Edit'), h('button', { class: 'btn', onClick: () => showDeckOptions(deck, { onSave: () => { draw(); renderSidebar(); } }) }, svgIcon('sliders', 16), 'Options'), h('button', { class: 'btn', onClick: e => deckContextMenu(deck, e) }, svgIcon('more', 16)))));
-    // Modes
-    const modeTile = (mo, kind) => h('button', { class: 'mode-tile', style: { '--mode-color': mo.color }, onClick: () => { if (!pairs.length) { toast('Add some terms first', 'warning'); return; } navigate(`study/${mo.id}/${deck.id}`); } }, h('div', { class: 'mode-icon' }, svgIcon(mo.icon, 22)), h('div', { class: 'mode-text' }, h('div', { class: 'mode-name' }, mo.name, mo.id === 'review' && dueTotal ? h('span', { class: 'badge', style: { marginLeft: '8px' } }, dueTotal) : null), h('div', { class: 'mode-desc' }, mo.desc)), svgIcon('chevronRight', 16));
-    inner.append(h('div', { class: 'modes-section' }, h('div', { class: 'modes-grid stagger' }, ...MODES.map(m => modeTile(m, 'mode'))), h('div', { class: 'games-grid stagger' }, ...GAMES.map(g => modeTile(g, 'game')))));
-    // Preview + progress
-    const prev = h('div', { class: 'set-preview' });
-    if (pairs.length) {
-      const p = pairs[Math.min(previewIdx, pairs.length - 1)];
-      const face = (side) => h('div', { class: `preview-face ${side}` }, h('div', { class: 'preview-label' }, side === 'front' ? 'Term' : 'Definition'), p[side === 'front' ? 'termImage' : 'defImage'] ? h('img', { src: p[side === 'front' ? 'termImage' : 'defImage'], class: 'preview-img' }) : null, h('div', { class: 'preview-text', html: side === 'front' ? (p.termHtml || escapeHtml(p.term)) : (p.defHtml || escapeHtml(p.definition)) }), h('button', { class: 'icon-btn preview-audio', 'data-tip': 'Play audio', onClick: e => { e.stopPropagation(); speak(side === 'front' ? p.term : p.definition, { lang: side === 'front' ? deck.langFront : deck.langBack }); } }, svgIcon('volume', 16)));
-      const card = h('div', { class: `preview-card ${previewFlipped ? 'flipped' : ''}`, onClick: () => { previewFlipped = !previewFlipped; card.classList.toggle('flipped', previewFlipped); } }, h('div', { class: 'preview-inner' }, face('front'), face('back')));
-      prev.append(card, h('div', { class: 'preview-nav' }, h('button', { class: 'icon-btn lg', disabled: previewIdx === 0, onClick: () => { previewIdx--; previewFlipped = false; draw(); } }, svgIcon('arrowLeft', 20)), h('span', { class: 'bold' }, `${previewIdx + 1} / ${pairs.length}`), h('button', { class: 'icon-btn lg', disabled: previewIdx >= pairs.length - 1, onClick: () => { previewIdx++; previewFlipped = false; draw(); } }, svgIcon('arrowRight', 20)), h('button', { class: 'btn btn-sm btn-ghost', style: { marginLeft: 'auto' }, onClick: () => navigate(`study/flashcards/${deck.id}`) }, 'Open flashcards', svgIcon('maximize', 14))));
-    } else prev.append(h('div', { class: 'empty-state' }, h('h3', {}, 'No terms yet'), h('p', {}, 'Add terms to start studying.'), h('button', { class: 'btn btn-primary', onClick: () => navigate(`edit/${deck.id}`) }, 'Add terms')));
-    const progress = h('div', { class: 'panel set-progress' }, h('div', { class: 'panel-title' }, h('span', { class: 'row' }, svgIcon('activity', 16), 'Progress'), h('button', { class: 'btn btn-sm btn-ghost', onClick: () => navigate(`stats?deck=${deck.id}`) }, 'Details')),
-      h('div', { class: 'row', style: { gap: '20px', alignItems: 'center' } }, donut([{ label: 'Mastered', value: m.mastered, color: 'var(--ok)' }, { label: 'Still learning', value: m.learning, color: 'var(--warn)' }, { label: 'Not studied', value: m.notStudied, color: 'var(--surface-3)' }], { size: 110, stroke: 14, centerLabel: `${Math.round(m.pct * 100)}%`, centerSub: 'mastered' }), h('div', { class: 'col', style: { gap: '6px' } }, legendRow('var(--ok)', 'Mastered', m.mastered), legendRow('var(--warn)', 'Still learning', m.learning), legendRow('var(--border-strong)', 'Not studied', m.notStudied))),
-      h('hr'), h('div', { class: 'row between' }, h('div', {}, h('div', { class: 'bold' }, 'Spaced repetition'), h('div', { class: 'small muted' }, dueTotal ? `${due.new} new · ${due.learn} learning · ${due.review} to review` : 'Nothing due right now')), h('button', { class: `btn btn-sm ${dueTotal ? 'btn-primary' : ''}`, onClick: () => navigate(`study/review/${deck.id}`) }, svgIcon('brain', 14), dueTotal ? `Review ${dueTotal}` : 'Study ahead')),
-      m.learning + m.notStudied > 0 ? h('button', { class: 'btn btn-block btn-soft', style: { marginTop: '12px' }, onClick: () => navigate(`study/learn/${deck.id}`) }, svgIcon('zap', 14), `Learn the ${m.learning + m.notStudied} you haven't mastered`) : h('div', { class: 'small center', style: { marginTop: '12px', color: 'var(--ok)' } }, '✓ Every card mastered. Keep reviewing to retain it.'));
-    inner.append(h('div', { class: 'set-mid' }, prev, progress));
+    // Header (simple)
+    const pct = Math.round(m.pct * 100);
+    const crumb = deck.folderId && db.folders.get(deck.folderId) ? h('button', { class: 'crumb', onClick: () => navigate(`folder/${deck.folderId}`) }, svgIcon('folder', 13), db.folders.get(deck.folderId).name) : h('button', { class: 'crumb', onClick: () => navigate('library') }, svgIcon('library', 13), 'Library');
+    inner.append(h('div', { class: 'sd-head', style: { '--deck-color': deck.color || 'var(--accent)' } },
+      h('div', { class: 'sd-top' }, crumb, h('div', { class: 'row', style: { gap: '6px' } },
+        h('button', { class: 'btn btn-sm btn-ghost', onClick: () => navigate(`edit/${deck.id}`) }, svgIcon('edit', 15), 'Edit'),
+        h('button', { class: 'icon-btn', 'data-tip': 'Options', onClick: () => showDeckOptions(deck, { onSave: () => { draw(); renderSidebar(); } }) }, svgIcon('sliders', 16)),
+        h('button', { class: 'icon-btn', onClick: e => deckContextMenu(deck, e) }, svgIcon('more', 16)))),
+      h('h1', { class: 'sd-title' }, deck.name),
+      h('div', { class: 'sd-meta' }, `${plural(pairs.length, 'card')} · ${pct}% mastered` + (deck.lastStudied ? ` · studied ${fmtRelative(deck.lastStudied)}` : '')),
+      h('div', { class: 'sd-bar' }, h('div', { style: { width: pct + '%' } }))));
+    // Study actions
+    const go = (id) => { if (!pairs.length) { toast('Add some terms first', 'warning'); return; } navigate(`study/${id}/${deck.id}`); };
+    const primaryId = dueTotal ? 'review' : 'learn';
+    const chip = (mo) => h('button', { class: 'sd-chip', style: { '--mode-color': mo.color }, onClick: () => go(mo.id) }, svgIcon(mo.icon, 18), mo.name);
+    const main3 = MODES.filter(x => ['flashcards', 'learn', 'test'].includes(x.id));
+    const extras = [...MODES.filter(x => ['write', 'spell', 'review'].includes(x.id) && x.id !== primaryId), ...GAMES];
+    const moreBox = h('div', { class: 'sd-more hidden' }, ...extras.map(chip));
+    const moreBtn = h('button', { class: 'sd-more-btn', onClick: () => { const open = moreBox.classList.toggle('hidden'); moreBtn.textContent = open ? 'More ways to study' : 'Fewer options'; } }, 'More ways to study');
+    inner.append(h('div', { class: 'sd-study' },
+      h('button', { class: 'btn btn-primary btn-lg sd-primary', onClick: () => go(primaryId) }, svgIcon(dueTotal ? 'brain' : 'zap', 18), dueTotal ? `Study ${dueTotal} due` : 'Study'),
+      h('div', { class: 'sd-chips' }, ...main3.map(chip)),
+      moreBtn, moreBox));
     // Terms list
     const starred = notes.filter(n => n.starred).length;
     const header = h('div', { class: 'terms-head' }, h('h2', { class: 'section-title', style: { margin: 0 } }, `Terms in this set (${pairs.length})`), h('div', { class: 'row wrap' },

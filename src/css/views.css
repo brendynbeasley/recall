@@ -300,3 +300,21 @@ mark { background: var(--warn-soft); color: inherit; border-radius: 3px; padding
   .browser-layout { grid-template-columns: 1fr; }
   .theme-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ===== Simplified set page ===== */
+.sd-head { max-width: 860px; margin: 0 auto 22px; }
+.sd-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.sd-title { font-size: 1.9rem; line-height: 1.2; margin: 0 0 6px; letter-spacing: -.01em; }
+.sd-meta { color: var(--text-muted); font-size: .92rem; }
+.sd-bar { height: 4px; border-radius: 2px; background: var(--surface-3); margin-top: 14px; overflow: hidden; }
+.sd-bar > div { height: 100%; background: var(--deck-color, var(--accent)); border-radius: 2px; }
+.sd-study { max-width: 860px; margin: 0 auto 34px; display: flex; flex-direction: column; gap: 12px; }
+.sd-primary { justify-content: center; width: 100%; height: 52px; font-size: 1.05rem; }
+.sd-chips, .sd-more { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.sd-more { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+.sd-chip { display: flex; align-items: center; justify-content: center; gap: 8px; height: 46px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); color: var(--text); font-weight: 600; }
+.sd-chip .icon { color: var(--mode-color); }
+.sd-chip:hover { border-color: color-mix(in srgb, var(--mode-color) 50%, var(--border)); }
+.sd-more-btn { align-self: center; background: none; border: 0; color: var(--text-muted); font-size: .85rem; padding: 4px 8px; cursor: pointer; }
+.sd-more-btn:hover { color: var(--text); }
+.sd-head ~ .terms-head, .sd-head ~ .terms-list, .sd-head ~ .btn-block { max-width: 860px; margin-left: auto; margin-right: auto; }
