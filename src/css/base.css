@@ -327,3 +327,102 @@ html:has(body.tabbar-mode) { font-size: calc(16.5px * var(--font-scale)); }
 body.tabbar-mode .main-inner { max-width: 1240px; padding-left: 40px; padding-right: 40px; }
 body.tabbar-mode .hm { max-width: 1180px; }
 body.tabbar-mode .sd-head, body.tabbar-mode .sx-wrap, body.tabbar-mode .sx-wrap ~ .set-mid, body.tabbar-mode .sd-head ~ .terms-head, body.tabbar-mode .sd-head ~ .terms-list, body.tabbar-mode .sd-head ~ .btn-block { max-width: 1120px; }
+
+/* ===== Extra themes ===== */
+[data-theme="black"] {
+  color-scheme: dark;
+  --bg: #000000; --bg-2: #000000; --surface: #0b0b0b; --surface-2: #141414; --surface-3: #1f1f1f; --surface-glass: color-mix(in srgb, #0b0b0b 78%, transparent);
+  --text: #f5f5f5; --text-2: #c9c9c9; --text-muted: #8a8a8a; --text-faint: #4d4d4d;
+  --border: rgba(255,255,255,.08); --border-strong: rgba(255,255,255,.16); --ring: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .45);
+  --titlebar: color-mix(in srgb, #000000 85%, transparent); --sidebar: color-mix(in srgb, #000000 70%, transparent);
+  --card-face: #0b0b0b; --card-face-2: #141414; --glow: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .35);
+  --bg-grad-1: #000; --bg-grad-2: #000;
+  --shadow: 0 8px 24px -8px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.3);
+}
+[data-theme="graphite"] {
+  color-scheme: dark;
+  --bg: #18191c; --bg-2: #1c1d20; --surface: #212226; --surface-2: #292a2f; --surface-3: #34363c; --surface-glass: color-mix(in srgb, #212226 78%, transparent);
+  --text: #ececee; --text-2: #c4c5ca; --text-muted: #8d8f96; --text-faint: #5c5e64;
+  --border: rgba(255,255,255,.08); --border-strong: rgba(255,255,255,.16); --ring: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .45);
+  --titlebar: color-mix(in srgb, #18191c 85%, transparent); --sidebar: color-mix(in srgb, #1c1d20 70%, transparent);
+  --card-face: #212226; --card-face-2: #292a2f; --glow: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .35);
+  --bg-grad-1: hsl(var(--accent-h) 18% 15%); --bg-grad-2: #18191c;
+  --shadow: 0 8px 24px -8px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.3);
+}
+[data-theme="cobalt"] {
+  color-scheme: dark; --accent-h: 210; --accent-s: 90%; --accent-l: 62%; --accent-text: #fff;
+  --bg: #08121f; --bg-2: #0b1729; --surface: #0f1c31; --surface-2: #15243d; --surface-3: #1e304f; --surface-glass: color-mix(in srgb, #0f1c31 78%, transparent);
+  --text: #e8f0ff; --text-2: #b9c8e4; --text-muted: #7d8fb3; --text-faint: #4a5b7d;
+  --border: rgba(255,255,255,.08); --border-strong: rgba(255,255,255,.16); --ring: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .45);
+  --titlebar: color-mix(in srgb, #08121f 85%, transparent); --sidebar: color-mix(in srgb, #0b1729 70%, transparent);
+  --card-face: #0f1c31; --card-face-2: #15243d; --glow: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .35);
+  --bg-grad-1: hsl(215 75% 18%); --bg-grad-2: hsl(190 65% 13%);
+  --shadow: 0 8px 24px -8px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.3);
+}
+[data-theme="mocha"] {
+  color-scheme: dark; --accent-h: 30; --accent-s: 62%; --accent-l: 62%; --accent-text: #1b1613;
+  --bg: #1b1613; --bg-2: #1f1915; --surface: #251f1b; --surface-2: #2e2722; --surface-3: #3a312b; --surface-glass: color-mix(in srgb, #251f1b 78%, transparent);
+  --text: #f3ebe4; --text-2: #d6c9bd; --text-muted: #a08f80; --text-faint: #6b5d52;
+  --border: rgba(255,255,255,.08); --border-strong: rgba(255,255,255,.16); --ring: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .45);
+  --titlebar: color-mix(in srgb, #1b1613 85%, transparent); --sidebar: color-mix(in srgb, #1f1915 70%, transparent);
+  --card-face: #251f1b; --card-face-2: #2e2722; --glow: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .35);
+  --bg-grad-1: hsl(28 45% 15%); --bg-grad-2: hsl(10 35% 12%);
+  --shadow: 0 8px 24px -8px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.3);
+}
+[data-theme="ember"] {
+  color-scheme: dark; --accent-h: 16; --accent-s: 90%; --accent-l: 60%; --accent-text: #fff;
+  --bg: #160d0b; --bg-2: #1a100e; --surface: #201412; --surface-2: #2a1a17; --surface-3: #36221e; --surface-glass: color-mix(in srgb, #201412 78%, transparent);
+  --text: #fbece7; --text-2: #e0c4bb; --text-muted: #a8867c; --text-faint: #6e5049;
+  --border: rgba(255,255,255,.08); --border-strong: rgba(255,255,255,.16); --ring: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .45);
+  --titlebar: color-mix(in srgb, #160d0b 85%, transparent); --sidebar: color-mix(in srgb, #1a100e 70%, transparent);
+  --card-face: #201412; --card-face-2: #2a1a17; --glow: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .35);
+  --bg-grad-1: hsl(15 75% 15%); --bg-grad-2: hsl(340 55% 12%);
+  --shadow: 0 8px 24px -8px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.3);
+}
+[data-theme="paper"] {
+  color-scheme: light;
+  --bg: #fafaf8; --bg-2: #f4f4f1; --surface: #ffffff; --surface-2: #f6f6f3; --surface-3: #ebebe7; --surface-glass: color-mix(in srgb, #ffffff 75%, transparent);
+  --text: #1c1c1a; --text-2: #45453f; --text-muted: #85857c; --text-faint: #b3b3aa;
+  --border: rgba(28,28,26,.09); --border-strong: rgba(28,28,26,.16); --ring: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .35);
+  --titlebar: color-mix(in srgb, #fafaf8 85%, transparent); --sidebar: color-mix(in srgb, #ffffff 65%, transparent);
+  --card-face: #ffffff; --card-face-2: #f6f6f3; --glow: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .25);
+  --bg-grad-1: #f1f0ea; --bg-grad-2: #f6f5f0;
+}
+[data-theme="sakura"] {
+  color-scheme: light; --accent-h: 340; --accent-s: 70%; --accent-l: 58%; --accent-text: #fff;
+  --bg: #fdf6f8; --bg-2: #fbeff3; --surface: #ffffff; --surface-2: #fdf3f6; --surface-3: #f5e1e8; --surface-glass: color-mix(in srgb, #ffffff 75%, transparent);
+  --text: #2a1820; --text-2: #5a3c48; --text-muted: #9a7a86; --text-faint: #c9adb7;
+  --border: rgba(80,20,40,.09); --border-strong: rgba(80,20,40,.16); --ring: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .35);
+  --titlebar: color-mix(in srgb, #fdf6f8 85%, transparent); --sidebar: color-mix(in srgb, #ffffff 65%, transparent);
+  --card-face: #ffffff; --card-face-2: #fdf3f6; --glow: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .25);
+  --bg-grad-1: hsl(340 90% 93%); --bg-grad-2: hsl(20 90% 94%);
+}
+[data-theme="lavender"] {
+  color-scheme: light; --accent-h: 262; --accent-s: 62%; --accent-l: 60%; --accent-text: #fff;
+  --bg: #f7f5fd; --bg-2: #f1eefb; --surface: #ffffff; --surface-2: #f6f4fd; --surface-3: #e7e2f7; --surface-glass: color-mix(in srgb, #ffffff 75%, transparent);
+  --text: #1e1a2e; --text-2: #4a4366; --text-muted: #857ea3; --text-faint: #b5afcd;
+  --border: rgba(40,20,90,.09); --border-strong: rgba(40,20,90,.16); --ring: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .35);
+  --titlebar: color-mix(in srgb, #f7f5fd 85%, transparent); --sidebar: color-mix(in srgb, #ffffff 65%, transparent);
+  --card-face: #ffffff; --card-face-2: #f6f4fd; --glow: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .25);
+  --bg-grad-1: hsl(262 80% 93%); --bg-grad-2: hsl(200 80% 94%);
+}
+[data-theme="matcha"] {
+  color-scheme: light; --accent-h: 145; --accent-s: 45%; --accent-l: 40%; --accent-text: #fff;
+  --bg: #f5f8f3; --bg-2: #eef3eb; --surface: #ffffff; --surface-2: #f4f8f2; --surface-3: #e2eadd; --surface-glass: color-mix(in srgb, #ffffff 75%, transparent);
+  --text: #17201a; --text-2: #3d4c41; --text-muted: #77877b; --text-faint: #aab8ad;
+  --border: rgba(20,50,30,.09); --border-strong: rgba(20,50,30,.16); --ring: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .35);
+  --titlebar: color-mix(in srgb, #f5f8f3 85%, transparent); --sidebar: color-mix(in srgb, #ffffff 65%, transparent);
+  --card-face: #ffffff; --card-face-2: #f4f8f2; --glow: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / .25);
+  --bg-grad-1: hsl(110 50% 91%); --bg-grad-2: hsl(60 60% 93%);
+}
+
+/* Black: true black, never any ambient glow */
+[data-theme="black"] .bg-fx, body .bg-fx:has(~ #app) { }
+html[data-theme="black"] .bg-fx { background: #000 !important; }
+html[data-theme="black"] .bg-fx .orb { display: none; }
+
+/* Ambient modes */
+body.ambient-off .bg-fx { background: var(--bg) !important; }
+body.ambient-off .bg-fx .orb { display: none; }
+body.ambient-subtle .bg-fx .orb { opacity: .07 !important; }
+body.ambient-subtle .bg-fx::after { content: ''; position: absolute; inset: 0; background: var(--bg); opacity: .62; }
