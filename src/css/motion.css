@@ -8,8 +8,8 @@
 .deck-card:hover, .folder-card:hover { transform: translateY(-3px); }
 
 /* Spotlight that follows the pointer / finger */
-:is(.hm2-tile, .hm2-box, .deck-card, .folder-card, .deck-row, .sx-tile, .panel, .cs-opt) { background-image: radial-gradient(260px circle at var(--mx, -999px) var(--my, -999px), color-mix(in srgb, var(--accent) 0%, transparent), transparent 70%); }
-:is(.hm2-tile, .hm2-box, .deck-card, .folder-card, .deck-row, .sx-tile, .panel, .cs-opt).spot-on { background-image: radial-gradient(260px circle at var(--mx) var(--my), color-mix(in srgb, var(--accent) 11%, transparent), transparent 70%); }
+:is(.lb-card, .lb-folder, .hm2-tile, .hm2-box, .deck-card, .folder-card, .deck-row, .sx-tile, .panel, .cs-opt) { background-image: radial-gradient(260px circle at var(--mx, -999px) var(--my, -999px), color-mix(in srgb, var(--accent) 0%, transparent), transparent 70%); }
+:is(.lb-card, .lb-folder, .hm2-tile, .hm2-box, .deck-card, .folder-card, .deck-row, .sx-tile, .panel, .cs-opt).spot-on { background-image: radial-gradient(260px circle at var(--mx) var(--my), color-mix(in srgb, var(--accent) 11%, transparent), transparent 70%); }
 
 /* Page enter */
 .main > .main-inner:not(.hm2) { animation: pageIn .42s var(--out) both; }
