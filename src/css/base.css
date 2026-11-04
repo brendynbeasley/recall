@@ -240,6 +240,15 @@ body.sidebar-collapsed .sidebar .nav-btn.active::before { display: none; }
 .hidden { display: none !important; }
 .gradient-text { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
+/* ===== Safe areas on every size (iPad / installed web app) ===== */
+html { background: var(--bg); }
+body { min-height: 100vh; min-height: 100dvh; }
+#app { height: 100vh; height: 100dvh; }
+:root { --titlebar-h: calc(48px + env(safe-area-inset-top)); }
+.titlebar { padding-top: env(safe-area-inset-top); padding-left: calc(14px + env(safe-area-inset-left)); }
+.titlebar .center { padding-right: env(safe-area-inset-right); }
+.sidebar { padding-bottom: calc(14px + env(safe-area-inset-bottom)); padding-left: calc(12px + env(safe-area-inset-left)); }
+.main { padding-bottom: env(safe-area-inset-bottom); }
 /* ===== Phones: bottom tab bar, compact titlebar, safe areas ===== */
 @media (max-width: 760px) {
   :root { --titlebar-h: calc(48px + env(safe-area-inset-top)); --tabbar-h: calc(60px + env(safe-area-inset-bottom)); }
