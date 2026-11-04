@@ -424,3 +424,5 @@ html[data-theme="black"] .ap-pv-bg { display: none; }
 .ap-amb-pv .o2 { width: 70px; height: 70px; right: -20px; bottom: -30px; background: var(--accent-2); }
 .ap-amb-pv.vivid i { opacity: .55; } .ap-amb-pv.subtle i { opacity: .18; } .ap-amb-pv.off i { display: none; }
 @media (max-width: 760px) { .ap-hero { grid-template-columns: 1fr; } .ap-amb-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+.diag { margin: 0; padding: 14px 16px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); font: 500 .8rem/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--text-2); white-space: pre-wrap; }

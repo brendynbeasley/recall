@@ -136,6 +136,24 @@ export function render(main, route) {
       renderSyncSettings(inner, sec, draw);
     } else {
       const about = h('div', { class: 'kv' }); if (native) native.info().then(i => { about.append(kv('Version', i.version), kv('Electron', i.electron), kv('Chromium', i.chrome), kv('Platform', i.platform)); }); else about.append(kv('Version', '1.0.0 (web preview)'));
+      { // Display diagnostics: helps track down iOS/iPadOS screen-size bugs
+        const probe = h('div', { style: { position: 'fixed', top: 0, left: 0, width: 0, height: 0, paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)', visibility: 'hidden', pointerEvents: 'none' } }); document.body.append(probe);
+        const cs = getComputedStyle(probe); const rs = getComputedStyle(document.documentElement);
+        const vv = window.visualViewport; const box = h('pre', { class: 'diag selectable' });
+        const lines = [
+          'innerHeight × innerWidth: ' + innerHeight + ' × ' + innerWidth,
+          'visualViewport: ' + (vv ? Math.round(vv.height) + ' × ' + Math.round(vv.width) : 'n/a'),
+          'screen: ' + screen.width + ' × ' + screen.height,
+          'clientHeight: ' + document.documentElement.clientHeight,
+          'safe areas (t r b l): ' + [cs.paddingTop, cs.paddingRight, cs.paddingBottom, cs.paddingLeft].join(' '),
+          '--app-h: ' + (rs.getPropertyValue('--app-h').trim() || 'unset') + '   --vp-gap: ' + (rs.getPropertyValue('--vp-gap').trim() || 'unset'),
+          'standalone: ' + (navigator.standalone === true || matchMedia('(display-mode: standalone)').matches) + '   touch layout: ' + document.body.classList.contains('tabbar-mode') + '   fix active: ' + document.documentElement.classList.contains('vp-fix'),
+          'device: ' + navigator.platform + ' · ' + navigator.maxTouchPoints + ' touch points',
+        ];
+        box.textContent = lines.join('\n'); probe.remove();
+        fetch('sw.js', { cache: 'no-store' }).then(r => r.text()).then(t => { const m = t.match(/VERSION = '([^']+)'/); box.textContent += '\nbuild: ' + (m ? m[1] : '?'); }).catch(() => {});
+        inner.append(sec('Display diagnostics', 'If something looks wrong on screen, a screenshot of this helps fix it.', box));
+      }
       inner.append(sec('About Recall', 'A complete study studio that works offline. Quizlet-style modes and games, Anki-style spaced repetition, and optional cloud sync. No tracking.',
         h('div', { class: 'about-hero' }, h('div', { class: 'intro-logo', style: { animation: 'none', opacity: 1, width: '56px', height: '56px', borderRadius: '16px' } }), h('div', {}, h('h3', { style: { fontSize: '1.4rem' } }, 'Recall'), h('p', { class: 'muted' }, 'Remember everything.'))), about,
         h('div', { class: 'label', style: { margin: '14px 0 6px' } }, 'Built with'), h('p', { class: 'small muted' }, 'Electron · Three.js (intro) · sql.js (Anki package import) · JSZip. Scheduling implements SM-2 with Anki-style learning steps and FSRS-4.5.'),
