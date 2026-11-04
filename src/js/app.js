@@ -83,7 +83,7 @@ function renderTitlebar() {
   const center = h('div', { class: 'center' },
     h('button', { class: 'search-trigger', onClick: () => openPalette() }, svgIcon('search', 15), h('span', {}, 'Search sets, cards, actions…'), h('kbd', {}, `${modKey} K`)),
     h('button', { class: 'tb-btn', 'data-tip': 'Zen mode', 'data-kbd': `${modKey}+Shift+Z`, onClick: toggleZen }, svgIcon('eye', 16)),
-    h('button', { class: 'tb-btn', 'data-tip': 'Toggle fullscreen', 'data-kbd': 'F11', onClick: toggleFullscreen }, h('span', { class: 'fs-enter' }, svgIcon('maximize', 16)), h('span', { class: 'fs-exit' }, svgIcon('maximize-off', 16))),
+    h('button', { class: 'tb-btn fs-btn', 'data-tip': 'Toggle fullscreen', 'data-kbd': 'F11', onClick: toggleFullscreen }, h('span', { class: 'fs-enter' }, svgIcon('maximize', 16)), h('span', { class: 'fs-exit' }, svgIcon('maximize-off', 16))),
     h('button', { class: 'tb-btn', 'data-tip': 'Keyboard shortcuts', 'data-kbd': '?', onClick: showShortcuts }, svgIcon('keyboard', 16)),
     syncButton());
   const controls = h('div', { class: 'win-controls' },
@@ -92,7 +92,7 @@ function renderTitlebar() {
     h('button', { title: 'Close', class: 'close', onClick: () => native && native.close() }, h('span', { html: '<svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10" stroke="currentColor" stroke-width="1.1"/></svg>' })));
   tb.append(brand, center, controls);
   if (native) { native.onWindowState(st => { if (st.fullscreen !== undefined) document.body.classList.toggle('fullscreen', st.fullscreen); if (st.maximized !== undefined) document.body.classList.toggle('maximized', st.maximized); }); native.windowState().then(st => { document.body.classList.toggle('fullscreen', !!st.fullscreen); document.body.classList.toggle('maximized', !!st.maximized); }); }
-  else { document.body.classList.add('web'); document.addEventListener('fullscreenchange', () => document.body.classList.toggle('fullscreen', !!document.fullscreenElement)); }
+  else { document.body.classList.add('web'); if (navigator.standalone || matchMedia('(display-mode: standalone)').matches) document.body.classList.add('standalone'); document.addEventListener('fullscreenchange', () => document.body.classList.toggle('fullscreen', !!document.fullscreenElement)); }
 }
 // Titlebar cloud icon: shows sync state, opens Settings → Sync
 const SYNC_TIPS = { off: 'Cloud sync is off', unlinked: 'Finish setting up sync', syncing: 'Syncing…', ok: 'Synced', offline: 'Offline. Will sync later', error: 'Sync problem' };
