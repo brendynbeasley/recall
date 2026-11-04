@@ -280,5 +280,5 @@ boot();
 // ---------- Bottom tab bar (touch devices such as iPad): see tabbar.js ----------
 export function renderTabbar() {
   let totalDue = 0; try { const c = dueCounts(null); totalDue = c.new + c.learn + c.review; } catch (e) { /* */ }
-  renderTouchTabbar({ route: (app.route || {}).name, badge: totalDue, onSelect: id => { if (id === 'create') openCreateSheet({ origin: document.querySelector('.tb2-item.primary'), onPick: v => createSetFlow(v) }); else if (id === 'search') openPalette('', { origin: document.querySelector('.tb2-item[data-id="search"]') }); else navigate(id); } });
+  renderTouchTabbar({ route: (app.route || {}).name, badge: totalDue, onSelect: id => { if (id === 'create') openCreateSheet({ origin: document.querySelector('.dk-orb'), onPick: v => createSetFlow(v) }); else if (id === 'search') openPalette('', { origin: document.querySelector('.dk-item[data-id="search"]') }); else navigate(id); } });
 }

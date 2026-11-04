@@ -1,0 +1,192 @@
+/* ===== Touch navigation dock (tabbar.js) =====
+   One material, two objects: a glass pill of destinations and a glass ring holding the Create jewel.
+   Everything is tokenised off the theme (surface, text, accent), so all 12 themes and custom accents
+   inherit it. Motion is transform/opacity only. */
+
+body.tabbar-mode .tabbar.dock {
+  --dk-h: 64px;            /* pill and orb share one height */
+  --dk-pad: 5px;
+  --dk-item-w: 76px;
+  --dk-gap: 10px;
+  --dk-ease: cubic-bezier(.2, .9, .25, 1.08);
+  --dk-glass-top: color-mix(in srgb, var(--surface) 90%, transparent);
+  --dk-glass-bot: color-mix(in srgb, var(--surface) 82%, transparent);
+  --dk-ink: color-mix(in srgb, var(--text) 58%, transparent);
+  --dk-ink-on: var(--text);
+
+  left: 50%; right: auto;
+  bottom: calc(env(safe-area-inset-bottom) * .5 + 10px - var(--vp-gap, 0px));
+  align-items: center; gap: var(--dk-gap); padding: 0;
+  background: none; border: 0; border-radius: 0; box-shadow: none;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  transform: translateX(-50%) translateZ(0);
+  transform-origin: 50% 100%;
+  transition: transform .6s var(--dk-ease);
+  touch-action: none; -webkit-user-select: none; user-select: none;
+  will-change: transform;
+}
+body.tabbar-mode .main { padding-bottom: calc(var(--dk-reserve, 98px) + env(safe-area-inset-bottom) * .5); }
+html.vp-fix body.tabbar-mode:not(.study-mode):not(.zen) .toast-wrap,
+body.tabbar-mode:not(.study-mode):not(.zen) .toast-wrap { bottom: calc(92px + env(safe-area-inset-bottom) * .5 - var(--vp-gap, 0px)); }
+
+/* Scrim: content dissolves into the floor before it reaches the dock, so the glass never sits on top of
+   busy text. Fixed and non-interactive; hidden wherever the dock is. */
+body.tabbar-mode::after {
+  content: ""; position: fixed; left: 0; right: 0; bottom: 0; z-index: 64; pointer-events: none;
+  height: calc(118px + env(safe-area-inset-bottom) * .5);
+  background: linear-gradient(to top,
+    color-mix(in srgb, var(--bg) 92%, transparent) 0%,
+    color-mix(in srgb, var(--bg) 70%, transparent) 38%,
+    color-mix(in srgb, var(--bg) 28%, transparent) 72%,
+    transparent);
+  transition: opacity .4s ease;
+}
+body.tabbar-mode.study-mode::after, body.tabbar-mode.zen::after, body.intro-playing::after { opacity: 0; }
+
+/* ---------- Material ---------- */
+.dk-glass {
+  position: relative; isolation: isolate; height: var(--dk-h);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--dk-glass-top), var(--dk-glass-bot));
+  -webkit-backdrop-filter: blur(40px) saturate(1.8); backdrop-filter: blur(40px) saturate(1.8);
+  box-shadow:
+    0 0 0 .5px rgba(0, 0, 0, .38),            /* crisp outer edge, defines the shape on any background */
+    0 1px 2px rgba(0, 0, 0, .16),
+    0 10px 22px -8px rgba(0, 0, 0, .34),
+    0 30px 60px -22px rgba(0, 0, 0, .55);     /* long, soft lift */
+}
+/* Rim: a 1px gradient border, brighter at the top edge where light would catch. */
+.dk-glass::before, .dk-pill::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.dk-glass::before {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, #fff 24%, transparent),
+    color-mix(in srgb, #fff 7%, transparent) 38%,
+    color-mix(in srgb, #fff 3%, transparent) 62%,
+    color-mix(in srgb, #fff 10%, transparent));
+}
+/* Rim light that rides above the selection (--lx is set by the spring each frame). */
+.dk-pill::after {
+  background:
+    radial-gradient(70px 26px at var(--lx, -200px) 0, color-mix(in srgb, var(--accent) 65%, #fff), transparent 72%),
+    radial-gradient(60px 18px at var(--lx, -200px) 100%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 72%);
+  opacity: .85;
+}
+
+/* ---------- Destinations ---------- */
+.dk-track { position: relative; display: flex; align-items: center; height: 100%; padding: var(--dk-pad); }
+
+.dk-lens {
+  position: absolute; left: 0; top: var(--dk-pad); bottom: var(--dk-pad);
+  border-radius: 999px; pointer-events: none; transform-origin: 50% 50%; will-change: transform, width;
+  background:
+    radial-gradient(120% 130% at 50% 0%, color-mix(in srgb, var(--accent) 26%, transparent), color-mix(in srgb, var(--accent) 11%, transparent) 72%);
+  box-shadow:
+    inset 0 0 0 .5px color-mix(in srgb, var(--accent) 48%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #fff 16%, transparent),
+    0 8px 20px -10px color-mix(in srgb, var(--accent) 70%, transparent);
+  transition: opacity .25s ease, box-shadow .3s ease;
+}
+.dk-lens.gone { opacity: 0; }
+.dock.scrub .dk-lens {
+  box-shadow:
+    inset 0 0 0 .5px color-mix(in srgb, var(--accent) 70%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #fff 26%, transparent),
+    0 14px 30px -10px color-mix(in srgb, var(--accent) 80%, transparent);
+}
+
+.dk-item {
+  position: relative; z-index: 1; flex: none;
+  width: var(--dk-item-w); height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  padding: 0; border: 0; border-radius: 999px; background: none; cursor: pointer;
+  color: var(--dk-ink); -webkit-tap-highlight-color: transparent;
+  transition: color .25s ease;
+}
+.dk-item.on, .dk-item.hover { color: var(--dk-ink-on); }
+.dk-item:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ring); }
+
+.dk-ico { position: relative; display: grid; place-items: center; transition: transform .5s var(--dk-ease); }
+.dk-ico svg { display: block; overflow: visible; }
+.dk-ico .o, .dk-ico .f { transition: opacity .22s ease; }
+.dk-ico .f { opacity: 0; }
+.dk-item.on .dk-ico { color: var(--accent); }
+.dk-item.on .dk-ico .o { opacity: 0; }
+.dk-item.on .dk-ico .f { opacity: 1; }
+.dk-item.press .dk-ico { transform: scale(.84); transition-duration: .12s; }
+.dk-item.hover .dk-ico { transform: translateY(-1px) scale(1.1); }
+.dk-ico.pop { animation: dkPop .6s var(--dk-ease); }
+@keyframes dkPop { 0% { transform: scale(.78); } 45% { transform: scale(1.12) translateY(-1.5px); } 100% { transform: none; } }
+
+.dk-lbl {
+  font: 600 10.5px/1 var(--font-ui); letter-spacing: .015em; white-space: nowrap;
+  transition: opacity .3s ease, transform .5s var(--dk-ease);
+}
+
+.dk-badge {
+  position: absolute; top: -5px; left: calc(50% + 5px);
+  min-width: 17px; height: 17px; padding: 0 5px; border-radius: 9px;
+  display: grid; place-items: center;
+  font: 700 10px/1 var(--font-ui); font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+  color: var(--accent-text, #fff);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, #fff), var(--accent));
+  box-shadow: 0 0 0 2px var(--surface), 0 2px 6px -1px color-mix(in srgb, var(--accent) 70%, transparent);
+  opacity: 0; transform: scale(.4); transition: opacity .2s ease, transform .45s var(--dk-ease);
+}
+.dk-badge.show { opacity: 1; transform: none; }
+.dk-item.on .dk-badge { opacity: 0; transform: scale(.4); } /* you're on Home: the count is on screen */
+
+/* ---------- Create ---------- */
+.dk-orb {
+  flex: none; width: var(--dk-h); padding: 0; border: 0; cursor: pointer;
+  display: grid; place-items: center; -webkit-tap-highlight-color: transparent;
+}
+.dk-core {
+  width: calc(var(--dk-h) - 2 * var(--dk-pad) - 4px); aspect-ratio: 1; border-radius: 50%;
+  display: grid; place-items: center; color: var(--accent-text, #fff);
+  background:
+    radial-gradient(85% 60% at 50% 0%, color-mix(in srgb, #fff 34%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, #fff), var(--accent) 52%, color-mix(in srgb, var(--accent) 80%, #000));
+  box-shadow:
+    inset 0 0 0 .5px color-mix(in srgb, #fff 30%, transparent),
+    inset 0 -2px 5px color-mix(in srgb, #000 22%, transparent),
+    0 6px 16px -6px color-mix(in srgb, var(--accent) 80%, transparent);
+  transition: transform .5s var(--dk-ease), box-shadow .3s ease;
+}
+.dk-core svg { stroke-width: 2.25; }
+.dk-core .dk-ico { transition: transform .55s var(--dk-ease); }
+.dk-orb.press .dk-core { transform: scale(.9); transition-duration: .12s; }
+.dk-orb.press .dk-core .dk-ico { transform: rotate(90deg); }
+.dk-orb.open .dk-core .dk-ico { transform: rotate(135deg); }   /* reads as ✕ while the Create sheet is up */
+.dk-orb.open .dk-core { box-shadow: inset 0 0 0 .5px color-mix(in srgb, #fff 30%, transparent), 0 0 0 5px color-mix(in srgb, var(--accent) 20%, transparent), 0 6px 16px -6px color-mix(in srgb, var(--accent) 80%, transparent); }
+.dk-orb:focus-visible { outline: none; }
+.dk-orb:focus-visible .dk-core { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ring); }
+
+/* ---------- Condensed (scrolling down) ---------- */
+body.tabbar-mode .tabbar.dock.condensed { transform: translateX(-50%) translateY(8px) scale(.86) translateZ(0); }
+.dock.condensed .dk-lbl { opacity: 0; transform: translateY(4px); }
+.dock.condensed .dk-item .dk-ico { transform: translateY(6.5px); }   /* recentre once the label has folded away */
+.dock.condensed .dk-item.press .dk-ico { transform: translateY(6.5px) scale(.84); }
+.dock.condensed .dk-pill::after { opacity: .5; }
+
+/* ---------- Light themes: lighter shadows, firmer glass ---------- */
+:root:not([data-theme]) .dock, [data-theme="light"] .dock {
+  --dk-glass-top: color-mix(in srgb, var(--surface) 92%, transparent);
+  --dk-glass-bot: color-mix(in srgb, var(--surface) 84%, transparent);
+}
+[data-theme="light"] .dk-glass, :root:not([data-theme]) .dk-glass {
+  box-shadow: 0 0 0 .5px rgba(20, 22, 40, .14), 0 1px 2px rgba(20, 22, 40, .06), 0 10px 22px -8px rgba(20, 22, 40, .14), 0 30px 60px -22px rgba(20, 22, 40, .22);
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 560px) {
+  body.tabbar-mode .tabbar.dock { --dk-h: 60px; --dk-item-w: 64px; --dk-gap: 8px; }
+  body.tabbar-mode .main { --dk-reserve: 92px; }
+}
+
+/* ---------- Reduce motion ---------- */
+body.reduced-motion .tabbar.dock, body.reduced-motion .dock *, body.reduced-motion .dock *::before, body.reduced-motion .dock *::after { transition: none !important; animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .tabbar.dock, .dock * { transition-duration: .01ms !important; animation: none !important; } }

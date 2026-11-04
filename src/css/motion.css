@@ -42,9 +42,6 @@ body:not(.no-edge-glow) .hm2-mesh { display: none; }
 body.reduced-motion .el-cone i, body.reduced-motion .el-orb { animation: none !important; }
 
 /* Bottom nav: filled icon when active; + turns into x while the create sheet is open */
-.tb2-item.on:not(.primary) svg { fill: color-mix(in srgb, var(--accent) 22%, transparent); }
-.tb2-item.primary.open .tb2-icon { transform: rotate(135deg); }
-.tb2-item.primary.open { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 18%, transparent), 0 8px 22px -6px color-mix(in srgb, var(--accent) 75%, transparent); }
 
 /* Create sheet */
 .cs-scrim { position: fixed; inset: 0; z-index: 64; background: color-mix(in srgb, var(--bg) 0%, transparent); transition: background .35s ease, backdrop-filter .35s ease; }
@@ -130,17 +127,4 @@ body.tabbar-mode .palette { padding-top: 9vh; }
 .edge-light { transform: translateZ(0); contain: strict; }
 .edge-light.drawn:not(.boost) .el-side, .edge-light.drawn:not(.boost) .el-cone, .edge-light.drawn:not(.boost) .el-cone i, .edge-light.drawn:not(.boost) .el-side.r { animation: none !important; }
 .edge-light:not(.boost) { opacity: var(--el-base, .72); transition: opacity .6s ease; }
-/* Lighter glass while content scrolls under it */
-body.tabbar-mode .tabbar.tb2 { backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); transform: translateX(-50%) translateZ(0); will-change: transform; contain: layout paint; }
 .scroll-head { -webkit-mask-image: none; mask-image: none; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid color-mix(in srgb, var(--text) 6%, transparent); }
-.tb2-item { transition: color .2s ease; }
-.tb2-icon { will-change: transform; }
-/* Scroll down: the bar condenses into a slimmer, quieter pill and sinks a little; scroll up restores it.
-   All five buttons stay put and tappable; only transform/opacity animate (60fps on iPad). */
-.tabbar.tb2 { transition: transform .55s var(--spring), box-shadow .4s ease, background-color .4s ease; }
-.tabbar.tb2.condensed { transform: translateX(-50%) translateY(10px) scale(.84) translateZ(0); box-shadow: 0 10px 30px -12px rgba(0,0,0,.5); background-color: color-mix(in srgb, var(--surface) 55%, transparent); }
-.tabbar.tb2.condensed .tb2-item:not(.on):not(.primary) .tb2-icon { opacity: .6; transform: scale(.92); transition: opacity .3s ease, transform .45s var(--spring); }
-.tabbar.tb2 .tb2-item .tb2-icon { transition: opacity .3s ease, transform .45s var(--spring); }
-.tabbar.tb2.condensed .tb2-badge { transform: scale(.85); }
-/* neutralise the old two-button mode if a stale class lingers */
-.tabbar.tb2.mini .tb2-item { width: 66px !important; opacity: 1 !important; pointer-events: auto !important; }
