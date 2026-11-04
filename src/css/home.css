@@ -60,7 +60,7 @@ body.ambient-off .hm2-mesh, html[data-theme="black"] .hm2-mesh { display: none; 
 .hm2-tile-t { min-width: 0; flex: 1; }
 .hm2-tile-k { font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); }
 .hm2-tile-big { font-size: 1.7rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; margin-top: 2px; font-variant-numeric: tabular-nums; }
-.hm2-tile-big span { font-size: .95rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0; }
+.hm2-tile-big > span:not(.hm2-num) { font-size: .95rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0; }
 .hm2-tile-s { font-size: .8rem; color: var(--text-muted); margin-top: 2px; }
 .hm2-flame { flex: none; width: 60px; height: 60px; border-radius: 18px; display: grid; place-items: center; background: var(--surface-2); color: var(--text-faint); }
 .hm2-flame.on { color: #fb923c; background: radial-gradient(circle at 50% 70%, color-mix(in srgb, #f97316 30%, transparent), color-mix(in srgb, #f97316 8%, transparent)); box-shadow: 0 0 30px -6px color-mix(in srgb, #f97316 60%, transparent); }
@@ -103,9 +103,9 @@ body.ambient-off .hm2-mesh, html[data-theme="black"] .hm2-mesh { display: none; 
 .hm2-panel-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
 .hm2-spark { height: 84px; }
 .hm2-spark svg { width: 100%; height: 100%; display: block; overflow: visible; }
-.hm2-spark .line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: hm2Draw 1.6s cubic-bezier(.2,.8,.2,1) .5s forwards; }
+.hm2-spark svg { clip-path: inset(0 100% 0 0); animation: hm2Reveal 1.6s cubic-bezier(.2,.8,.2,1) .5s forwards; }
 .hm2-spark .area { opacity: 0; animation: hm2Fade .9s ease 1.2s forwards; }
-@keyframes hm2Draw { to { stroke-dashoffset: 0; } } @keyframes hm2Fade { to { opacity: 1; } }
+@keyframes hm2Reveal { to { clip-path: inset(0 0 0 0); } } @keyframes hm2Fade { to { opacity: 1; } }
 .hm2-bars { display: grid; grid-template-columns: repeat(7, 1fr); align-items: end; gap: 6px; height: 88px; }
 .hm2-bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; height: 100%; }
 .hm2-bar { width: 100%; max-width: 22px; border-radius: 6px; background: color-mix(in srgb, var(--accent) 50%, transparent); transform-origin: bottom; animation: hm2Grow .8s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(600ms + var(--k, 0) * 60ms); }
@@ -117,7 +117,7 @@ body.ambient-off .hm2-mesh, html[data-theme="black"] .hm2-mesh { display: none; 
 .hm2-empty { font-size: .85rem; color: var(--text-muted); padding: 10px 0; }
 
 body.reduced-motion .hm2 .rise, body.reduced-motion .hm2-set, body.reduced-motion .hm2-bar { animation: none !important; }
-body.reduced-motion .hm2-spark .line { stroke-dashoffset: 0; animation: none; } body.reduced-motion .hm2-spark .area { opacity: 1; animation: none; }
+body.reduced-motion .hm2-spark svg { clip-path: none; animation: none; } body.reduced-motion .hm2-spark .area { opacity: 1; animation: none; }
 body.reduced-motion .hm2-card.d0, body.reduced-motion .hm2-mesh i, body.reduced-motion .hm2-cta::after, body.reduced-motion .hm2-eyebrow::before, body.reduced-motion .hm2-flame .icon { animation: none !important; }
 
 @media (max-width: 900px) {
