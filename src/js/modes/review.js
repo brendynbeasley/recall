@@ -37,7 +37,7 @@ export async function start(ctx) {
     // new cards and reviews due today, in the session's order
     for (const c0 of queue.main) { const c = db.cards.get(c0.id); if (!c || c.id === card?.id) continue; if (c.queue === QUEUE.NEW || (c.queue === QUEUE.REVIEW && c.due <= d)) return c; }
     // nothing else left: show learning cards early if they're due within 20 minutes (Anki's learn-ahead)
-    if (learning.length) { const soon = learning.find(c => c.due - t <= LEARN_AHEAD); return soon || learning[0]; }
+    if (learning.length) { const soon = learning.find(c => c.id !== card?.id && c.due - t <= LEARN_AHEAD) || learning.find(c => c.due - t <= LEARN_AHEAD); return soon || learning[0]; }
     return null;
   }
   function counts() { const t = Date.now(); let nw = 0, lrn = 0, rev = 0; const seen = new Set();
