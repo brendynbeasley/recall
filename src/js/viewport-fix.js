@@ -17,9 +17,14 @@
     // Only correct a full-screen app (window spans the screen width). A resized iPadOS window is left alone.
     if (!standalone || !screen || !screen.width || !screen.height) return h;
     var lw = Math.max(screen.width, screen.height), lh = Math.min(screen.width, screen.height);
-    if (Math.abs(w - lw) <= 2) return Math.max(tallest[k], lh);      // landscape, full screen
-    if (Math.abs(w - lh) <= 2) return Math.max(tallest[k], lw);      // portrait, full screen
-    return h;
+    var landscape = w > h;
+    // Page zoom (Safari remembers a per-site zoom, and home-screen apps inherit it) makes CSS pixels differ
+    // from screen points. Convert the width to points using devicePixelRatio (iPad = 2x, iPhone = 2x/3x).
+    var dpr = window.devicePixelRatio || 2, wantW = landscape ? lw : lh, full = false;
+    [2, 3].forEach(function (base) { if (Math.abs(w * dpr / base - wantW) <= 3) full = true; });
+    if (!full) return h;                                              // resized window: leave alone
+    var byAspect = Math.round(landscape ? w * lh / lw : w * lw / lh); // full-screen height in CSS px, zoom-proof
+    return Math.max(tallest[k], byAspect);
   }
   function apply() {
     var full = expected(), gap = Math.max(0, full - window.innerHeight);
