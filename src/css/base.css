@@ -275,3 +275,7 @@ body { min-height: 100vh; min-height: 100dvh; }
 
 /* Installed web app is already fullscreen; the Fullscreen API breaks the layout on iPad */
 body.standalone .fs-btn { display: none !important; }
+
+/* Pin the app to the screen so zoom / viewport changes never leave a gap */
+html, body { overscroll-behavior: none; touch-action: pan-x pan-y; }
+#app { position: fixed; inset: 0; height: auto; }
