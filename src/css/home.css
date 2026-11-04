@@ -76,3 +76,7 @@
 @media (max-width: 560px) { .hm-head-actions .btn-ghost { display: none; } .hm-big { font-size: 2.8rem; } .hm-stats { grid-template-columns: 1fr 1fr 1fr; } .hm-stat b { font-size: 1.3rem; } }
 
 .hm-forecast-empty { font-size: .85rem; color: var(--text-muted); padding: 8px 0 6px; line-height: 1.45; }
+
+/* No glow on Black theme or when ambient is off */
+html[data-theme="black"] .hm-today::before, body.ambient-off .hm-today::before { display: none; }
+body.ambient-subtle .hm-today::before { opacity: .4; }
