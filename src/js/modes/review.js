@@ -29,12 +29,15 @@ export async function start(ctx) {
     queue = buildQueue(deck.id, deck, { ignoreLimits });
   }
   function pickNext() {
-    const t = Date.now(); const dueLearn = queue.learn.filter(c => c.queue === QUEUE.LEARN && c.due <= t && c.id !== card?.id);
-    if (dueLearn.length) return dueLearn.sort((a, b) => a.due - b.due)[0];
-    const m = queue.main.find(c => c.id !== card?.id && db.cards.get(c.id) && db.cards.get(c.id).queue >= 0 && !(db.cards.get(c.id).queue === QUEUE.LEARN && db.cards.get(c.id).due > t + 1200000)); if (m) return db.cards.get(m.id);
-    // learning cards not yet due: show the soonest if within 20 minutes, else wait
-    const pending = queue.learn.filter(c => db.cards.get(c.id)?.queue === QUEUE.LEARN).map(c => db.cards.get(c.id)).sort((a, b) => a.due - b.due);
-    if (pending.length) return pending[0];
+    const t = Date.now(); const LEARN_AHEAD = 20 * 60000; const d = today();
+    const live = [...new Set([...queue.main, ...queue.learn].map(c => c.id))].map(id => db.cards.get(id)).filter(c => c && c.queue >= 0);
+    const learning = live.filter(c => c.queue === QUEUE.LEARN).sort((x, y) => x.due - y.due);
+    const dueLearn = learning.filter(c => c.due <= t && c.id !== card?.id);
+    if (dueLearn.length) return dueLearn[0];
+    // new cards and reviews due today, in the session's order
+    for (const c0 of queue.main) { const c = db.cards.get(c0.id); if (!c || c.id === card?.id) continue; if (c.queue === QUEUE.NEW || (c.queue === QUEUE.REVIEW && c.due <= d)) return c; }
+    // nothing else left: show learning cards early if they're due within 20 minutes (Anki's learn-ahead)
+    if (learning.length) { const soon = learning.find(c => c.due - t <= LEARN_AHEAD); return soon || learning[0]; }
     return null;
   }
   function counts() { const t = Date.now(); let nw = 0, lrn = 0, rev = 0; const seen = new Set();
@@ -47,7 +50,7 @@ export async function start(ctx) {
   function next() {
     clearTimeout(autoTimer); typed = null; card = pickNext(); shown = false;
     if (!card) { congrats(); return; }
-    if (card.queue === QUEUE.LEARN && card.due > Date.now()) { waitScreen(card); return; }
+    if (card.queue === QUEUE.LEARN && card.due > Date.now() + 20 * 60000) { waitScreen(card); return; }
     header(); cardStart = Date.now(); renderQ();
   }
   function renderQ() {
@@ -103,9 +106,15 @@ export async function start(ctx) {
   function cardInfo() { const note = db.notes.get(card.noteId); const logs = db.revlog.filter(r => r.cardId === card.id).sort((a, b) => b.time - a.time); const kv = (k, v) => h('div', { class: 'kv-row' }, h('span', { class: 'muted' }, k), h('span', {}, String(v))); modal({ title: 'Card info', size: 'md', content: h('div', {}, h('div', { class: 'kv' }, kv('Added', new Date(note.created).toLocaleString()), kv('First review', logs.length ? new Date(logs[logs.length - 1].time).toLocaleString() : '—'), kv('Latest review', logs.length ? new Date(logs[0].time).toLocaleString() : '—'), kv('Type', ['New', 'Learning', 'Review', 'Relearning'][card.type]), kv('Interval', `${card.ivl} days`), kv('Ease', `${Math.round((card.factor || 2500) / 10)}%`), kv('Reviews', card.reps), kv('Lapses', card.lapses), kv('Average time', logs.length ? fmtDuration(logs.reduce((a, l) => a + (l.took || 0), 0) / logs.length) : '—'), kv('Total time', fmtDuration(logs.reduce((a, l) => a + (l.took || 0), 0))), card.stability ? kv('Stability / Difficulty', `${card.stability.toFixed(2)} / ${card.difficulty.toFixed(2)}`) : null, kv('Card ID', card.id), kv('Note ID', note.id)), h('div', { class: 'label', style: { margin: '12px 0 6px' } }, 'History'), h('div', { class: 'revlog-list' }, ...logs.slice(0, 30).map(r => h('div', { class: 'revlog-row' }, h('span', { class: `rating r${r.rating}` }, ['', 'Again', 'Hard', 'Good', 'Easy'][r.rating]), h('span', { class: 'muted' }, new Date(r.time).toLocaleString()), h('span', {}, r.ivl > 0 ? `${r.ivl}d` : `${-r.ivl}m`), h('span', { class: 'muted' }, `${Math.round((r.took || 0) / 1000)}s`))))) }); }
   function waitScreen(c) {
     frame.body.innerHTML = ''; clearInterval(timerIv); const wait = Math.max(0, c.due - Date.now());
-    frame.body.append(h('div', { class: 'results pop-in' }, h('div', { class: 'results-hero' }, h('div', { class: 'mode-icon big', style: { '--mode-color': '#f59e0b' } }, svgIcon('clock', 30)), h('div', {}, h('h1', {}, 'Learning cards are resting'), h('p', { class: 'muted' }, `The next card is due in ${fmtMin(Math.ceil(wait / 60000))}. You can wait, or study it now.`))), h('div', { class: 'results-actions' }, h('button', { class: 'btn btn-primary btn-lg', onClick: () => { card = null; c.due = Date.now(); db.cards.put(c); next(); } }, 'Study it now'), h('button', { class: 'btn btn-lg', onClick: () => congrats(true) }, 'Finish for now'))));
+    const studyNow = () => { card = null; c.due = Date.now(); db.cards.put(c); next(); };
+    frame.body.append(h('div', { class: 'rest-screen pop-in' },
+      h('div', { class: 'rest-icon' }, svgIcon('clock', 28)),
+      h('h2', { class: 'rest-title' }, 'Taking a short break'),
+      h('p', { class: 'rest-sub' }, `Your next learning card is ready in ${fmtMin(Math.ceil(wait / 60000))}. Spacing it out helps it stick.`),
+      h('div', { class: 'rest-actions' }, h('button', { class: 'btn btn-lg', onClick: () => congrats(true) }, 'Finish for now'), h('button', { class: 'btn btn-primary btn-lg', onClick: studyNow }, 'Study it now'))));
     const t = setTimeout(() => { if (!finished && !shown) next(); }, Math.min(wait + 200, 60000)); frame._waitTimer = t;
   }
+
   function congrats(early = false) {
     finished = true; clearInterval(timerIv); const s = tracker.finish({ meta: { again: stats.again } });
     const dc = deck ? dueCounts(deck.id, deck) : dueCounts(null); const buried = dc.buried;
