@@ -54,6 +54,16 @@
   addEventListener('focus', function () { soon(120); });
   apply();
   addEventListener('DOMContentLoaded', function () { apply(); setTimeout(heal, 300); setTimeout(heal, 1500); });
+  // Bad launch: iOS sometimes sizes the app short at launch and a fresh load fixes it. Try one reload, at most
+  // once per 30 seconds (guarded so it can never loop), only when the gap is still there after healing.
+  setTimeout(function () {
+    if (typing() || document.hidden) return;
+    if (apply() <= 20) return;
+    var last = 0; try { last = +sessionStorage.getItem('vpReloadAt') || 0; } catch (e) { return; }
+    if (Date.now() - last < 30000) return;
+    try { sessionStorage.setItem('vpReloadAt', String(Date.now())); } catch (e) { return; }
+    location.reload();
+  }, 2200);
   // Safety net: check every few seconds while visible (cheap; does nothing unless the viewport is short).
   setInterval(function () { if (!document.hidden) heal(); }, 4000);
 })();
