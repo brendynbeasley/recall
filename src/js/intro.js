@@ -19,7 +19,7 @@ function cardTexture(word, hue, light) {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
 }
 
-export function playIntro({ accentHue = 252, onDone, skipable = true, fast = false } = {}) {
+export function playClassicIntro({ accentHue = 252, onDone, skipable = true, fast = false } = {}) {
   const root = document.getElementById('intro-root');
   root.innerHTML = '';
   const wrap = h('div', { class: 'intro' });
@@ -130,3 +130,8 @@ export function playIntro({ accentHue = 252, onDone, skipable = true, fast = fal
   requestAnimationFrame(() => { wrap.classList.add('in'); frame(); });
   return { finish };
 }
+
+// Intro picker: 'ember' (default), 'classic' (3D cards). Off is handled by the showIntro setting.
+import { playEmberIntro } from './intro-ember.js';
+import { S as __S } from './models.js';
+export function playIntro(opts = {}) { const v = opts.variant || __S().introVariant || 'ember'; return v === 'classic' ? playClassicIntro(opts) : playEmberIntro(opts); }
