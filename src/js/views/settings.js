@@ -11,6 +11,8 @@ import { showImportDialog, restoreBackupFlow } from '../importers.js';
 import { renderSyncSettings } from './syncsettings.js';
 
 let apSection = 'theme', apFilter = 'all';
+// Settings tabs as an icon bar: the active tab shows its name, the rest show just their icon.
+const iconTabs = el => { el.classList.add('icon-tabs'); const fix = () => el.querySelectorAll('.tab').forEach(b => { const n = b.textContent.trim(); if (n) { b.title = n; b.setAttribute('aria-label', n); } }); fix(); new MutationObserver(fix).observe(el, { childList: true }); return el; };
 const FONTS = ['System', 'Segoe UI', 'Inter', 'Georgia', 'Cambria', 'Times New Roman', 'Verdana', 'Trebuchet MS', 'Calibri', 'Consolas', 'Comic Sans MS', 'Palatino Linotype', 'Garamond', 'Arial Rounded MT Bold'];
 
 // Mini app mock rendered with a theme's own tokens (data-theme scopes the CSS variables to this element)
@@ -26,7 +28,7 @@ export function render(main, route) {
   const draw = () => {
     inner.innerHTML = ''; const s = S(); inner.classList.toggle('ap-fit', tab === 'appearance');
     inner.append(pageHeader('Settings', 'Make Recall yours. Every option is saved instantly.'));
-    inner.append(tabs([{ id: 'appearance', label: 'Appearance', icon: 'palette' }, { id: 'study', label: 'Study', icon: 'brain' }, { id: 'audio', label: 'Audio & speech', icon: 'volume' }, { id: 'startup', label: 'Startup & window', icon: 'layout' }, { id: 'data', label: 'Data & backups', icon: 'database' }, { id: 'sync', label: 'Sync', icon: 'cloud' }, { id: 'about', label: 'About', icon: 'info' }], tab, t => { tab = t; history.replaceState(null, '', `#/settings?tab=${t}`); draw(); }));
+    inner.append(iconTabs(tabs([{ id: 'appearance', label: 'Appearance', icon: 'palette' }, { id: 'study', label: 'Study', icon: 'brain' }, { id: 'audio', label: 'Audio & speech', icon: 'volume' }, { id: 'startup', label: 'Startup & window', icon: 'layout' }, { id: 'data', label: 'Data & backups', icon: 'database' }, { id: 'sync', label: 'Sync', icon: 'cloud' }, { id: 'about', label: 'About', icon: 'info' }], tab, t => { tab = t; history.replaceState(null, '', `#/settings?tab=${t}`); draw(); })));
     const sec = (title, desc, ...kids) => h('div', { class: 'settings-section panel' }, h('h2', {}, title), desc ? h('p', {}, desc) : null, ...kids);
     const re = () => { saveSettings(); applyTheme(); };
     if (tab === 'appearance') {

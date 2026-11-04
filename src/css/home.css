@@ -177,3 +177,22 @@ body.tabbar-mode .hm2 { padding-bottom: 0 !important; }
   .hm2-box .hm2-set-meta { font-size: .76rem; }
   .hm2-box .hm2-section-head h2 { font-size: 1rem; }
 }
+
+/* Auto-fit fallbacks for large text sizes */
+.hm2.hm2-compact .hm2-sub, .hm2.hm2-compact .hm2-actions .btn-ghost, .hm2.hm2-compact .ga-tiles .hm2-tile-s, .hm2.hm2-compact .ga-rhythm .hm2-tile-s, .hm2.hm2-compact .hm2-date { display: none; }
+.hm2.hm2-compact .hm2-greet { font-size: 1.6rem; }
+.hm2.hm2-compact .hm2-today { padding: 16px 20px; }
+.hm2.hm2-compact .hm2-count { margin-top: 4px; } .hm2.hm2-compact .hm2-count .hm2-num { font-size: clamp(2.2rem, 5.5vh, 3.2rem); }
+.hm2.hm2-compact .hm2-split { margin-top: 8px; gap: 14px; } .hm2.hm2-compact .hm2-actions { padding-top: 10px; }
+.hm2.hm2-compact .hm2-cta { height: 40px; padding: 0 16px; }
+.hm2.hm2-compact .ga-tiles .hm2-tile { padding: 12px; gap: 6px; }
+.hm2.hm2-compact .ga-tiles .hm2-ring, .hm2.hm2-compact .ga-tiles .hm2-ring svg { width: 50px !important; height: 50px !important; }
+.hm2.hm2-compact .ga-tiles .hm2-flame { width: 40px; height: 40px; }
+.hm2.hm2-compact .ga-tiles .hm2-tile-big { font-size: 1.2rem; }
+.hm2.hm2-compact .hm2-box { padding: 12px 12px 10px; gap: 6px; }
+.hm2.hm2-compact .hm2-card-term { font-size: clamp(1rem, 2vw, 1.5rem); }
+.main:has(> .hm2.hm2-flow) { overflow: hidden auto !important; }
+.hm2.hm2-flow { height: auto !important; }
+.hm2.hm2-flow .hm2-grid { flex: none; grid-template-rows: auto auto !important; }
+.hm2.hm2-flow .ga-hero { min-height: 320px; }
+.hm2.hm2-flow .ga-sets .hm2-sets { overflow: visible; }
