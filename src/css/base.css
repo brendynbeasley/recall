@@ -272,3 +272,6 @@ body { min-height: 100vh; min-height: 100dvh; }
   .page-head { align-items: flex-start; margin-bottom: 18px; } .page-title { font-size: 1.45rem; }
   .overlay { padding: 10px; } .modal { max-height: calc(100vh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
 }
+
+/* Installed web app is already fullscreen; the Fullscreen API breaks the layout on iPad */
+body.standalone .fs-btn { display: none !important; }
