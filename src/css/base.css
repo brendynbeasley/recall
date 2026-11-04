@@ -426,3 +426,11 @@ body.ambient-off .bg-fx { background: var(--bg) !important; }
 body.ambient-off .bg-fx .orb { display: none; }
 body.ambient-subtle .bg-fx .orb { opacity: .07 !important; }
 body.ambient-subtle .bg-fx::after { content: ''; position: absolute; inset: 0; background: var(--bg); opacity: .62; }
+
+/* ===== iOS stuck-viewport fix (see js/viewport-fix.js) ===== */
+html.vp-fix, html.vp-fix body { background: var(--bg); }
+html.vp-fix #app { top: 0; bottom: auto !important; height: var(--app-h, 100%) !important; }
+html.vp-fix .bg-fx { top: 0; bottom: auto; height: var(--app-h, 100%); }
+html.vp-fix body.tabbar-mode .tabbar, html.vp-fix body.tabbar-mode .tab-search { bottom: calc(14px + env(safe-area-inset-bottom) - var(--vp-gap, 0px)); }
+html.vp-fix .zen-exit { bottom: calc(16px + env(safe-area-inset-bottom) - var(--vp-gap, 0px)); }
+html.vp-fix body.tabbar-mode:not(.study-mode):not(.zen) .toast-wrap { bottom: calc(90px + env(safe-area-inset-bottom) - var(--vp-gap, 0px)); }
