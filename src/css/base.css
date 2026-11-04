@@ -297,7 +297,7 @@ body.zen:not(.study-mode) .zen-exit { display: block; }
 /* ===== Touch devices (iPad): no titlebar/sidebar, floating bottom tab bar ===== */
 .tabbar { display: none; }
 body.tabbar-mode { --titlebar-h: 0px; }
-body.tabbar-mode #app { grid-template-rows: 0 1fr; }
+body.tabbar-mode #app { grid-template-rows: minmax(0, 1fr); }
 body.tabbar-mode .titlebar { display: none !important; }
 body.tabbar-mode .shell, body.tabbar-mode.sidebar-collapsed .shell { grid-template-columns: 1fr !important; }
 body.tabbar-mode .sidebar { display: none !important; }
