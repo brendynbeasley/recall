@@ -315,3 +315,15 @@ body.tabbar-mode.study-mode .tabbar, body.tabbar-mode.zen .tabbar, body.intro-pl
 @media (max-width: 560px) { .tab-item { width: 56px; } .tab-item .tab-label { display: none; } }
 
 body.tabbar-mode:not(.study-mode):not(.zen) .toast-wrap { bottom: calc(90px + env(safe-area-inset-bottom)); }
+
+/* Tab bar v2: 5 items (+ centred) and a separate round search button; bigger pages on iPad */
+.tab-search { display: none; }
+body.tabbar-mode .tab-search { display: grid; place-items: center; position: fixed; z-index: 65; bottom: calc(14px + env(safe-area-inset-bottom)); left: calc(50% + 230px); width: 66px; height: 66px; border-radius: 50%; border: 1px solid var(--border-strong); background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(24px) saturate(1.4); -webkit-backdrop-filter: blur(24px) saturate(1.4); box-shadow: 0 10px 40px rgba(0,0,0,.35); color: var(--text-muted); cursor: pointer; }
+body.tabbar-mode .tab-search.active { color: var(--text); }
+body.tabbar-mode .tab-search:active { transform: scale(.94); }
+body.tabbar-mode.study-mode .tab-search, body.tabbar-mode.zen .tab-search, body.intro-playing .tab-search { display: none; }
+@media (max-width: 560px) { body.tabbar-mode .tab-search { left: auto; right: 12px; width: 56px; height: 56px; } body.tabbar-mode .tabbar { left: 12px; transform: none; } }
+html:has(body.tabbar-mode) { font-size: calc(16.5px * var(--font-scale)); }
+body.tabbar-mode .main-inner { max-width: 1240px; padding-left: 40px; padding-right: 40px; }
+body.tabbar-mode .hm { max-width: 1180px; }
+body.tabbar-mode .sd-head, body.tabbar-mode .sx-wrap, body.tabbar-mode .sx-wrap ~ .set-mid, body.tabbar-mode .sd-head ~ .terms-head, body.tabbar-mode .sd-head ~ .terms-list, body.tabbar-mode .sd-head ~ .btn-block { max-width: 1120px; }
