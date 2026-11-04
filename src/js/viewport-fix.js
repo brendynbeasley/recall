@@ -32,7 +32,7 @@
   function heal() {
     if (typing()) { apply(); return; }
     if (apply() <= 4) return;
-    var app = document.getElementById('app'); if (!app) return;
+    var app = document.querySelector('.intro') || document.getElementById('app'); if (!app) return;
     var sc = document.getElementById('main'); var top = sc ? sc.scrollTop : 0;
     app.style.display = 'none'; void app.offsetHeight; app.style.display = '';
     if (sc) sc.scrollTop = top;
