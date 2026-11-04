@@ -9,6 +9,7 @@ import { levelProgress, levelTitle, checkAchievements } from './xp.js';
 import { playIntro } from './intro.js';
 import { renderTabbar as renderTouchTabbar } from './tabbar.js';
 import { showEdgeLight } from './edge-light.js';
+import { initMotion, openCreateSheet } from './motion.js';
 import * as Home from './views/home.js';
 import * as Library from './views/library.js';
 import * as Deck from './views/deck.js';
@@ -150,9 +151,9 @@ export function deckContextMenu(d, e) {
     { label: 'Delete set', icon: 'trash', danger: true, onClick: async () => { if (await confirm(`Delete "${d.name}" and all its cards? This cannot be undone.`, { danger: true, okLabel: 'Delete' })) { const { deleteDeck } = await import('./models.js'); deleteDeck(d.id); toast('Set deleted', 'info'); if (app.route.parts[0] === d.id) navigate('library'); else { renderSidebar(); if (app.route.name === 'library' || app.route.name === 'home') render(); } } } },
   ], { x: e.clientX, y: e.clientY });
 }
-export async function createSetFlow() {
+export async function createSetFlow(pre) {
   const { choose } = await import('./ui.js');
-  const v = await choose('Create', [
+  const v = pre || await choose('Create', [
     { label: 'New set', value: 'new', icon: 'plus', description: 'Start a blank set and add terms' },
     { label: 'Import from file or text', value: 'import', icon: 'upload', description: 'CSV, TSV, Quizlet export, Anki .apkg, JSON' },
     { label: 'New folder', value: 'folder', icon: 'folderPlus', description: 'Organise your sets' },
@@ -162,13 +163,13 @@ export async function createSetFlow() {
 
 // ---------- Command palette ----------
 let paletteEl = null;
-export function openPalette(initial = '') {
+export function openPalette(initial = '', opts = {}) {
   if (paletteEl) return; sfx.click();
   const input = h('input', { type: 'text', placeholder: 'Type a command or search…', value: initial, spellcheck: false });
   const list = h('div', { class: 'palette-list' });
   paletteEl = h('div', { class: 'palette' }, h('div', { class: 'palette-box' }, h('div', { class: 'palette-input' }, svgIcon('search', 18), input, h('kbd', {}, 'Esc')), list, h('div', { class: 'palette-foot' }, h('span', {}, '↑↓ navigate'), h('span', {}, '↵ select'), h('span', {}, 'Esc close'))));
-  document.body.append(paletteEl); requestAnimationFrame(() => paletteEl.classList.add('show')); input.focus();
-  const close = () => { if (!paletteEl) return; paletteEl.classList.remove('show'); const el = paletteEl; paletteEl = null; setTimeout(() => el.remove(), 150); };
+  document.body.append(paletteEl); if (opts.origin) { const o = opts.origin.getBoundingClientRect(), b = paletteEl.querySelector('.palette-box').getBoundingClientRect(); paletteEl.querySelector('.palette-box').style.transformOrigin = `${o.left + o.width / 2 - b.left}px ${o.top + o.height / 2 - b.top}px`; paletteEl.classList.add('from-origin'); } requestAnimationFrame(() => requestAnimationFrame(() => paletteEl && paletteEl.classList.add('show'))); input.focus();
+  const close = () => { if (!paletteEl) return; paletteEl.classList.remove('show'); const el = paletteEl; paletteEl = null; setTimeout(() => el.remove(), 320); };
   paletteEl.addEventListener('mousedown', e => { if (e.target === paletteEl) close(); });
   let items = [], active = 0;
   const actions = () => [
@@ -247,6 +248,7 @@ async function boot() {
     const reloadNow = () => { if (reloading) return; if (document.body.classList.contains('intro-playing')) { setTimeout(reloadNow, 400); return; } reloading = true; try { sessionStorage.setItem('recallSkipIntro', '1'); } catch (e) { /* */ } location.reload(); };
     navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadController) return; if (app.studyActive) { const once = () => { if (!app.studyActive) { removeEventListener('hashchange', once); reloadNow(); } }; addEventListener('hashchange', once); } else reloadNow(); });
     navigator.serviceWorker.register('sw.js').then(r => { document.addEventListener('visibilitychange', () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(e => console.warn('service worker', e)); }
+  initMotion();
   const s = S(); const firstRun = !s.onboarded;
   if (firstRun && db.decks.size === 0) { createSampleDecks(); }
   renderTitlebar();
@@ -278,5 +280,5 @@ boot();
 // ---------- Bottom tab bar (touch devices such as iPad): see tabbar.js ----------
 export function renderTabbar() {
   let totalDue = 0; try { const c = dueCounts(null); totalDue = c.new + c.learn + c.review; } catch (e) { /* */ }
-  renderTouchTabbar({ route: (app.route || {}).name, badge: totalDue, onSelect: id => { if (id === 'create') createSetFlow(); else if (id === 'search') openPalette(); else navigate(id); } });
+  renderTouchTabbar({ route: (app.route || {}).name, badge: totalDue, onSelect: id => { if (id === 'create') openCreateSheet({ origin: document.querySelector('.tb2-item.primary'), onPick: v => createSetFlow(v) }); else if (id === 'search') openPalette('', { origin: document.querySelector('.tb2-item[data-id="search"]') }); else navigate(id); } });
 }

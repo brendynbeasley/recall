@@ -20,8 +20,8 @@ export function playEmberIntro({ onDone, skipable = true } = {}) {
   at(3300, finish);
   function finish() {
     if (done) return; done = true; timers.forEach(clearTimeout); removeEventListener('keydown', onKey);
-    wrap.classList.add('out'); settleEdgeLight();
-    setTimeout(() => { root.innerHTML = ''; document.body.classList.remove('intro-playing'); endIntroEdge(); onDone && onDone(); }, 800);
+    wrap.classList.add('out'); settleEdgeLight(); document.body.classList.remove('intro-playing'); onDone && onDone();
+    setTimeout(() => { root.innerHTML = ''; endIntroEdge(); }, 900);
   }
   const onKey = e => { if (skipable && (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ')) finish(); };
   addEventListener('keydown', onKey);
