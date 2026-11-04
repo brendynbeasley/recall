@@ -3,7 +3,7 @@ import { db } from '../db.js';
 import { S, updateSettings, DEFAULT_SETTINGS, saveSettings } from '../models.js';
 import { h, svgIcon, fmtDate, modKey, hexToHsl } from '../utils.js';
 import { pageHeader, toggle, settingRow, select, numberInput, slider, segmented, toast, confirm, modal, tabs, prompt } from '../ui.js';
-import { applyTheme, THEMES, ACCENTS, THEME_OWNS_ACCENT, native, showShortcuts, renderSidebar } from '../app.js';
+import { navigate, applyTheme, THEMES, ACCENTS, THEME_OWNS_ACCENT, native, showShortcuts, renderSidebar } from '../app.js';
 import { getVoices, speak, sfx } from '../audio.js';
 import { playIntro } from '../intro.js';
 import { createBackup, exportAllJson, showExportDialog } from '../exporters.js';
@@ -28,7 +28,7 @@ export function render(main, route) {
   const draw = () => {
     inner.innerHTML = ''; const s = S(); inner.classList.toggle('ap-fit', tab === 'appearance');
     inner.append(pageHeader('Settings', 'Make Recall yours. Every option is saved instantly.'));
-    inner.append(iconTabs(tabs([{ id: 'appearance', label: 'Appearance', icon: 'palette' }, { id: 'study', label: 'Study', icon: 'brain' }, { id: 'audio', label: 'Audio & speech', icon: 'volume' }, { id: 'startup', label: 'Startup & window', icon: 'layout' }, { id: 'data', label: 'Data & backups', icon: 'database' }, { id: 'sync', label: 'Sync', icon: 'cloud' }, { id: 'about', label: 'About', icon: 'info' }], tab, t => { tab = t; history.replaceState(null, '', `#/settings?tab=${t}`); draw(); })));
+    inner.append(iconTabs(tabs([{ id: 'appearance', label: 'Appearance', icon: 'palette' }, { id: 'stats', label: 'Statistics', icon: 'stats' }, { id: 'achievements', label: 'Achievements', icon: 'trophy' }, { id: 'study', label: 'Study', icon: 'brain' }, { id: 'audio', label: 'Audio & speech', icon: 'volume' }, { id: 'startup', label: 'Startup & window', icon: 'layout' }, { id: 'data', label: 'Data & backups', icon: 'database' }, { id: 'sync', label: 'Sync', icon: 'cloud' }, { id: 'about', label: 'About', icon: 'info' }], tab, t => { if (t === 'stats' || t === 'achievements') { navigate(t); return; } tab = t; history.replaceState(null, '', `#/settings?tab=${t}`); draw(); })));
     const sec = (title, desc, ...kids) => h('div', { class: 'settings-section panel' }, h('h2', {}, title), desc ? h('p', {}, desc) : null, ...kids);
     const re = () => { saveSettings(); applyTheme(); };
     if (tab === 'appearance') {

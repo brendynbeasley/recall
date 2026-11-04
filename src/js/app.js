@@ -7,6 +7,7 @@ import { sfx, unlockAudio } from './audio.js';
 import { dueCounts, streakInfo } from './scheduler.js';
 import { levelProgress, levelTitle, checkAchievements } from './xp.js';
 import { playIntro } from './intro.js';
+import { renderTabbar as renderTouchTabbar } from './tabbar.js';
 import * as Home from './views/home.js';
 import * as Library from './views/library.js';
 import * as Deck from './views/deck.js';
@@ -272,19 +273,8 @@ function showWelcome() {
 boot();
 
 
-// ---------- Bottom tab bar (touch devices such as iPad) ----------
+// ---------- Bottom tab bar (touch devices such as iPad): see tabbar.js ----------
 export function renderTabbar() {
-  const tb = document.getElementById('tabbar'); if (!tb) return; tb.innerHTML = '';
-  if (!document.body.classList.contains('tabbar-mode')) return;
-  const r = app.route || {}; let totalDue = 0; try { const c = dueCounts(null); totalDue = c.new + c.learn + c.review; } catch (e) { /* */ }
-  const active = n => r.name === n || (n === 'library' && (r.name === 'folder' || r.name === 'set' || r.name === 'edit')) || (n === 'stats' && (r.name === 'achievements')) || (n === 'search' && r.name === 'browser');
-  const item = (n, icon, label, onClick, badge) => h('button', { class: `tab-item ${active(n) ? 'active' : ''}`, 'aria-label': label, onClick }, svgIcon(icon, 22), h('span', { class: 'tab-label' }, label), badge ? h('span', { class: 'tab-badge' }, badge > 99 ? '99+' : badge) : null);
-  tb.append(
-    item('home', 'home', 'Home', () => navigate('home'), totalDue || null),
-    item('library', 'library', 'Library', () => navigate('library')),
-    h('button', { class: 'tab-create', 'aria-label': 'Create', onClick: () => createSetFlow() }, svgIcon('plus', 24)),
-    item('stats', 'stats', 'Stats', () => navigate('stats')),
-    item('settings', 'settings', 'Settings', () => navigate('settings')));
-  let sb = document.getElementById('tab-search'); if (!sb) { sb = h('button', { id: 'tab-search', class: 'tab-search', 'aria-label': 'Search', onClick: () => openPalette() }, svgIcon('search', 22)); document.body.append(sb); }
-  sb.classList.toggle('active', active('search'));
+  let totalDue = 0; try { const c = dueCounts(null); totalDue = c.new + c.learn + c.review; } catch (e) { /* */ }
+  renderTouchTabbar({ route: (app.route || {}).name, badge: totalDue, onSelect: id => { if (id === 'create') createSetFlow(); else if (id === 'search') openPalette(); else navigate(id); } });
 }
