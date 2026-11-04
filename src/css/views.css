@@ -474,3 +474,14 @@ html[data-theme="black"] .ap-pv-bg { display: none; }
 .ap-chip-sw { width: 26px; height: 26px; border-radius: 8px; } .ap-chip-sw.split > .ap-chip-sw { width: 13px; height: 26px; }
 .ap-chip-n { font-size: .8rem; }
 @media (max-width: 560px) { .ap-chips { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Appearance: page fits the screen; only the control panel scrolls */
+@media (min-width: 901px) {
+  .main:has(> .ap-fit) { overflow: hidden; }
+  .ap-fit { height: 100%; display: flex; flex-direction: column; padding-bottom: 20px !important; }
+  .ap-fit > .ap-studio { flex: 1; min-height: 0; align-items: stretch; }
+  .ap-fit .ap-left { position: static; }
+  .ap-fit .ap-panel { min-height: 0; height: 100%; }
+  .ap-fit .ap-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  .ap-fit .page-head { margin-bottom: 12px; }
+}
