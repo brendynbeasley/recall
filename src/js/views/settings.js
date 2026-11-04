@@ -81,7 +81,7 @@ export function render(main, route) {
           row('Animations', h('div', {}, toggle(s.animations, v => set({ animations: v }, false), {})), 'Transitions, card flips and springs.'),
           row('Reduce motion', h('div', {}, toggle(s.reducedMotion, v => set({ reducedMotion: v }, false), {})), 'No large movement, confetti or countdowns.'),
           row('Celebrations', h('div', {}, toggle(s.confetti, v => updateSettings({ confetti: v }), {})), 'Confetti when you finish or hit a goal.'),
-          touch ? null : row('Keyboard hints', h('div', {}, toggle(s.keyboardHints, v => updateSettings({ keyboardHints: v }), {})), 'Shortcut keys on study buttons.'));
+          ...(touch ? [] : [row('Keyboard hints', h('div', {}, toggle(s.keyboardHints, v => updateSettings({ keyboardHints: v }), {})), 'Shortcut keys on study buttons.')]));
       }
       inner.append(h('div', { class: 'ap-studio' }, left, h('div', { class: 'ap-panel' }, seg, body)));
     } else if (tab === 'study') {
