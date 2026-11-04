@@ -37,18 +37,18 @@ export function playEmberIntro({ accentHue = 252, onDone, skipable = true } = {}
   }
   layout(); addEventListener('resize', layout);
 
-  const P = []; const MAX = reduced ? 0 : 900;
+  const P = []; const MAX = reduced ? 0 : 520;
   const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   const clamp = v => Math.max(0, Math.min(1, v));
   function emit(t, reach, power) {
     if (P.length > MAX || power <= 0) return;
-    const n = Math.round(14 * power);
+    let lit = 0; while (lit < path.length - 1 && path[lit + 1].f <= reach) lit++;
+    const n = Math.round(7 * power); const cx = card.x + card.w / 2;
     for (let k = 0; k < n; k++) {
-      // bias toward the bottom edge, within the lit reach
-      const f = Math.pow(Math.random(), 1.8) * reach; let p = path[0];
-      for (let i = 0; i < path.length; i++) if (path[i].f >= f) { p = path[Math.max(0, i - (Math.random() * 6 | 0))]; break; }
-      const side = Math.random() < .5 ? -1 : 1; const cx = card.x + card.w / 2; const px = cx + (p.x - cx) * side;
-      P.push({ x: px + (Math.random() - .5) * 6, y: p.y + (Math.random() - .5) * 4, vx: (Math.random() - .5) * 14 + side * (p.f < .05 ? 8 : -4), vy: -18 - Math.random() * 30, life: 0, max: 1.6 + Math.random() * 1.8, s: 10 + Math.random() * 26, sp: Math.random() < .25 ? spHot : Math.random() < .6 ? spMid : spDeep, seed: Math.random() * 100 });
+      const p = path[Math.floor(Math.pow(Math.random(), 1.25) * (lit + 1))];
+      const side = Math.random() < .5 ? -1 : 1; const px = cx + (p.x - cx) * side;
+      const r = Math.random();
+      P.push({ x: px + (Math.random() - .5) * 10, y: p.y + (Math.random() - .5) * 6, vx: (Math.random() - .5) * 10, vy: -10 - Math.random() * 22, life: 0, max: 2.2 + Math.random() * 2, s: 34 + Math.random() * 60, sp: r < .12 ? spHot : r < .55 ? spMid : spDeep, a: r < .12 ? .16 : .24, seed: Math.random() * 100 });
     }
   }
 
@@ -74,27 +74,24 @@ export function playEmberIntro({ accentHue = 252, onDone, skipable = true } = {}
     const ig = ctx.createRadialGradient(cx, b + hh * .15, 0, cx, b + hh * .15, hh * (.55 + well * .9));
     ig.addColorStop(0, `hsla(${(accentHue + 20) % 360} 100% 70% / ${.5 * well * fade})`); ig.addColorStop(.5, `hsla(${accentHue} 90% 45% / ${.18 * well * fade})`); ig.addColorStop(1, `hsla(${accentHue} 90% 30% / 0)`);
     ctx.fillStyle = ig; ctx.fillRect(x, y + dy, w, hh); ctx.restore();
-    // edge light: soft wide pass + hot thin core, brightest at the bottom, fading toward the reach front
-    const fadeFromBottom = lift; // as it lifts, the bottom cools first
-    for (const pass of [[9, .10], [2.2, .9]]) {
-      ctx.lineWidth = pass[0]; ctx.lineCap = 'round';
-      for (const side of [-1, 1]) for (let i = 1; i < path.length; i++) {
-        const a0 = path[i - 1], a1 = path[i]; if (a1.f > reach) break;
-        const k = Math.pow(1 - a1.f / Math.max(.001, reach), 1.6) * (1 - clamp((fadeFromBottom * 1.3 - a1.f) * 2.2 * (fadeFromBottom > 0 ? 1 : 0)));
-        const al = pass[1] * k * fade; if (al < .01) continue;
-        ctx.strokeStyle = pass[0] > 3 ? `hsla(${accentHue} 95% 62% / ${al})` : (a1.f < .25 ? hot : `hsla(${accentHue} 100% 75% / 1)`);
-        if (pass[0] <= 3) ctx.globalAlpha = al;
-        ctx.beginPath(); ctx.moveTo(cx + (a0.x - cx) * side, a0.y + dy); ctx.lineTo(cx + (a1.x - cx) * side, a1.y + dy); ctx.stroke(); ctx.globalAlpha = 1;
-      }
+    // edge light: continuous path, vertical gradient from a hot base to nothing at the climbing front
+    if (reach > .005) {
+      const topY = b - hh * reach, cool = lift;
+      const grad = (core) => { const g = ctx.createLinearGradient(0, b + 2, 0, topY); const c = core ? `hsla(${(accentHue + 30) % 360} 100% 90%` : `hsla(${accentHue} 95% 62%`;
+        g.addColorStop(0, `${c} / ${(core ? 1 : .32) * fade * (1 - cool)})`); g.addColorStop(Math.min(.95, .35 + cool * .5), `${c} / ${(core ? .75 : .22) * fade * (1 - cool * .5)})`); g.addColorStop(1, `${c} / 0)`); return g; };
+      const trace = () => { ctx.beginPath(); for (const side of [-1, 1]) { let first = true; for (const q of path) { if (q.f > reach) break; const X = cx + (q.x - cx) * side, Y = q.y + dy; first ? ctx.moveTo(X, Y) : ctx.lineTo(X, Y); first = false; } } };
+      ctx.lineJoin = ctx.lineCap = 'round';
+      trace(); ctx.lineWidth = 7; ctx.strokeStyle = grad(false); ctx.shadowColor = 'hsla(' + accentHue + ' 100% 60% / ' + (.9 * fade * (1 - cool)) + ')'; ctx.shadowBlur = 26; ctx.stroke(); ctx.shadowBlur = 0;
+      trace(); ctx.lineWidth = 1.6; ctx.strokeStyle = grad(true); ctx.stroke();
     }
     // smoke / heat particles
-    emit(t, Math.max(.04, reach), t < 3.1 ? (t < .5 ? 0 : 1) * (1 - lift) : 0);
+    emit(t, Math.max(.04, reach), t < 3.2 ? (t < .45 ? 0 : 1) * (1 - lift * .8) : 0);
     for (let i = P.length - 1; i >= 0; i--) {
       const p = P[i]; p.life += dt; if (p.life > p.max) { P.splice(i, 1); continue; }
       const u = p.life / p.max; const tt = t + p.seed;
       p.vx += (Math.sin(tt * 1.7 + p.y * .012) + Math.cos(tt * .9 + p.x * .01)) * 22 * dt; p.vx *= .985;
       p.vy -= (12 + lift * 60) * dt; p.x += p.vx * dt; p.y += p.vy * dt;
-      const s = p.s * (1 + u * 2.4); const al = Math.sin(Math.PI * Math.min(1, u * 1.15)) * .55 * fade;
+      const s = p.s * (1 + u * 1.8); const al = Math.sin(Math.PI * Math.min(1, u * 1.1)) * p.a * fade;
       ctx.globalAlpha = al; ctx.drawImage(p.sp, p.x - s / 2, p.y + dy * .3 - s / 2, s, s);
     }
     ctx.globalAlpha = 1; ctx.restore();
