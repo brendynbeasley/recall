@@ -24,7 +24,7 @@ export function ensureEdgeLight() {
     svg = mk('svg', { class: 'el-svg', preserveAspectRatio: 'none' });
     const defs = mk('defs', {});
     const g = mk('linearGradient', { id: 'elGrad', gradientUnits: 'userSpaceOnUse', x1: 0, x2: 0 });
-    [['0', 'var(--el-hot)', 1], ['.18', 'var(--accent)', .95], ['.55', 'var(--accent)', .35], ['1', 'var(--accent)', .06]].forEach(([o, c, a]) => g.append(mk('stop', { offset: o, style: `stop-color:${c};stop-opacity:${a}` })));
+    [['0', 'var(--el-hot)', 1], ['.12', 'var(--el-tone)', .9], ['.45', 'var(--el-tone)', .32], ['.8', 'var(--el-neutral)', .12], ['1', 'var(--el-neutral)', .16]].forEach(([o, c, a]) => g.append(mk('stop', { offset: o, style: `stop-color:${c};stop-opacity:${a}` })));
     const f = mk('filter', { id: 'elBlur', x: '-20%', y: '-20%', width: '140%', height: '140%' }); f.append(mk('feGaussianBlur', { stdDeviation: 7 }));
     defs.append(g, f); svg.append(defs);
     paths = [];

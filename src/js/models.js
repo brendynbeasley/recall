@@ -43,7 +43,7 @@ export const DEFAULT_PRESET = () => ({
 export const DEFAULT_SETTINGS = () => ({
   theme: 'system', accentHue: 252, accentPreset: 'indigo', customThemes: [], radius: 14, density: 'comfortable', fontScale: 1, uiFont: 'Inter', cardFont: 'Inter',
   animations: true, reducedMotion: false, sounds: true, soundVolume: 0.6, haptics: false, confetti: true, backgroundFx: true, ambient: 'vivid', glass: true,
-  showIntro: true, introVariant: 'ember', edgeGlow: true, introStyle: 'cards', startPage: 'home', dayRollover: 4, weekStart: 1,
+  showIntro: true, introVariant: 'ember', edgeGlow: true, edgeTone: 'warm', introStyle: 'cards', startPage: 'home', dayRollover: 4, weekStart: 1,
   tts: true, ttsRate: 1, ttsVoiceFront: '', ttsVoiceBack: '', ttsAutoplay: false, langFront: 'auto', langBack: 'auto',
   dailyGoalCards: 50, dailyGoalMinutes: 20, streakFreeze: 1,
   shortcuts: {}, keyboardHints: true,

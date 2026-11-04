@@ -505,3 +505,28 @@ body.reduced-motion .edge-light .el-wash { animation: none !important; }
 .edge-light.drawn:not(.boost) .el-bloom { animation: elBloom 9s ease-in-out infinite; }
 @keyframes elBloom { 0%, 100% { opacity: .42; transform: translateX(-50%) scale(1, .4); } 50% { opacity: .58; transform: translateX(-50%) scale(1.06, .48); } }
 body.reduced-motion .edge-light .el-bloom { animation: none !important; transition: opacity .3s; }
+
+/* ===== Edge light v3: modelled on the reference tile ===== */
+.edge-light { --el-tone: #d4875a; --el-hot: color-mix(in srgb, var(--el-tone) 50%, #fff); --el-neutral: var(--text); }
+body.edge-accent .edge-light { --el-tone: var(--accent); }
+/* haze rises from the bottom edges and corners; the centre stays darker */
+.edge-light .el-bloom { left: 0; bottom: 0; width: 100%; height: 100%; filter: none; transform: none !important; border-radius: var(--el-r, 0);
+  background:
+    radial-gradient(42% 60% at 0% 100%, color-mix(in srgb, var(--el-tone) 30%, transparent), transparent 70%),
+    radial-gradient(42% 60% at 100% 100%, color-mix(in srgb, var(--el-tone) 30%, transparent), transparent 70%),
+    radial-gradient(80% 22% at 50% 100%, color-mix(in srgb, var(--el-tone) 16%, transparent), transparent 85%),
+    linear-gradient(to top, color-mix(in srgb, var(--el-tone) 8%, transparent), transparent 45%);
+  -webkit-mask-image: linear-gradient(to top, #000 40%, transparent 70%); mask-image: linear-gradient(to top, #000 40%, transparent 70%);
+  -webkit-mask-size: 100% 250%; mask-size: 100% 250%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0%; mask-position: 0 0%; opacity: 0;
+  transition: -webkit-mask-position 2.2s cubic-bezier(.2, .7, .2, 1) .15s, mask-position 2.2s cubic-bezier(.2, .7, .2, 1) .15s, opacity 1.2s ease .15s; }
+.edge-light.drawn .el-bloom { -webkit-mask-position: 0 100%; mask-position: 0 100%; opacity: .7; }
+.edge-light.boost.drawn .el-bloom { opacity: 1; }
+.edge-light.drawn:not(.boost) .el-bloom { animation: elHaze 8s ease-in-out infinite; }
+@keyframes elHaze { 0%, 100% { opacity: .6; } 50% { opacity: .8; } }
+/* inner edge glow follows the rim: warm along the bottom and lower sides */
+.edge-light .el-wash { box-shadow: inset 0 0 70px color-mix(in srgb, var(--el-tone) 26%, transparent), inset 0 0 16px color-mix(in srgb, var(--el-tone) 26%, transparent);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.55) 30%, transparent 62%); mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.55) 30%, transparent 62%); }
+.edge-light.boost .el-wash { box-shadow: inset 0 0 100px color-mix(in srgb, var(--el-tone) 36%, transparent), inset 0 0 22px color-mix(in srgb, var(--el-tone) 34%, transparent); }
+.edge-light.boost .el-glow { stroke-width: 8; }
+body.reduced-motion .edge-light .el-bloom { animation: none !important; transition: opacity .3s; }
