@@ -87,10 +87,10 @@ export function render(main) {
         stat(weekReviews, 'reviews this week')),
       h('div', { class: 'hm-forecast' },
         h('div', { class: 'hm-forecast-label' }, 'Coming up'),
-        h('div', { class: 'hm-bars' }, ...fc.map((n, i) => h('div', { class: 'hm-bar-col' },
+        fc.some(Boolean) ? h('div', { class: 'hm-bars' }, ...fc.map((n, i) => h('div', { class: 'hm-bar-col' },
           h('span', { class: 'hm-bar-n' }, n || ''),
           h('div', { class: `hm-bar ${n ? '' : 'zero'} ${i === 0 ? 'today' : ''}`, style: { height: Math.max(4, Math.round(n / maxF * 52)) + 'px' } }),
-          h('span', { class: 'hm-bar-d' }, i === 0 ? 'Today' : new Date(Date.now() + i * 86400000).toLocaleDateString(undefined, { weekday: 'short' })))))))));
+          h('span', { class: 'hm-bar-d' }, i === 0 ? 'Today' : new Date(Date.now() + i * 86400000).toLocaleDateString(undefined, { weekday: 'short' }))))) : h('div', { class: 'hm-forecast-empty' }, 'Nothing scheduled yet. Cards show up here once you start reviewing.')))));
   main.append(inner);
 }
 
