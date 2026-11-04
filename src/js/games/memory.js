@@ -22,7 +22,7 @@ export async function start(ctx) {
     cards = shuffle(chosen.flatMap(p => [{ pair: p, side: 'term' }, { pair: p, side: 'definition' }])); tracker = sessionTracker(deck, 'memory');
     frame.body.innerHTML = ''; frame.setProgress(0); const b = best();
     frame.setStats(h('span', { class: 'row', style: { gap: '6px' } }, svgIcon('clock', 16), timeEl), statChip('moves', 0, ''), b ? h('span', { class: 'pill-stat' }, svgIcon('trophy', 13), `Best ${b.moves} moves · ${fmtTimer(b.time * 1000)}`) : null);
-    const cols = n <= 6 ? 4 : n <= 8 ? 4 : n <= 10 ? 5 : 6;
+    const total = n * 2, wide = innerWidth > innerHeight; const cols = wide ? (total <= 12 ? 4 : total <= 16 ? 4 : total <= 20 ? 5 : 6) : (total <= 12 ? 3 : 4);
     const grid = h('div', { class: 'memory-grid', style: { gridTemplateColumns: `repeat(${cols}, 1fr)` } });
     cards.forEach((c, i) => { const el = h('button', { class: `memory-card ${c.side}`, onClick: () => flip(c) }, h('div', { class: 'mem-inner' }, h('div', { class: 'mem-back' }, svgIcon('brain', 26)), h('div', { class: 'mem-front' }, sideImage(c.pair, c.side) ? h('img', { src: sideImage(c.pair, c.side) }) : null, h('div', { class: 'mem-text', html: sideHtml(c.pair, c.side) })))); c.el = el; grid.append(el); });
     frame.body.append(h('div', { class: 'memory-wrap' }, h('p', { class: 'muted center small' }, 'Flip two cards. Match each term with its definition.'), grid));
