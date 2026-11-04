@@ -96,13 +96,14 @@ export function render(main) {
   const stack = h('button', { class: 'hm2-stack', 'aria-label': 'Start review', onClick: start }, stackInner);
   stack.addEventListener('pointermove', e => { if (e.pointerType !== 'mouse' || reduced()) return; const r = stack.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; stackInner.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 12}deg)`; });
   stack.addEventListener('pointerleave', () => { stackInner.style.transform = ''; });
-  inner.append(rise(h('section', { class: 'hm2-hero' }, h('div', { class: 'hm2-mesh' }, h('i', { class: 'm1' }), h('i', { class: 'm2' }), h('i', { class: 'm3' })), today_, stack)));
+  const grid = h('div', { class: 'hm2-grid' }); inner.append(grid);
+  grid.append(rise(h('section', { class: 'hm2-hero ga-hero' }, h('div', { class: 'hm2-mesh' }, h('i', { class: 'm1' }), h('i', { class: 'm2' }), h('i', { class: 'm3' })), today_, stack)));
 
   // ---------- Glance tiles ----------
   const goal = Math.min(1, ts.cards / Math.max(1, ts.goalCards));
   let tot = 0, mas = 0; info.forEach(x => { tot += x.m.total; mas += x.m.mastered; });
   const tile = (...kids) => h('div', { class: 'hm2-tile' }, ...kids);
-  inner.append(rise(h('section', { class: 'hm2-tiles' },
+  grid.append(rise(h('section', { class: 'hm2-tiles ga-tiles' },
     tile(h('div', { class: `hm2-flame ${streak.studiedToday ? 'on' : ''}` }, svgIcon('flame', 26)),
       h('div', { class: 'hm2-tile-t' }, h('div', { class: 'hm2-tile-big' }, num(streak.current), h('span', {}, streak.current === 1 ? ' day' : ' days')), h('div', { class: 'hm2-tile-s' }, streak.studiedToday ? 'Streak safe for today' : streak.current ? 'Study today to keep it' : 'Start a streak today'), weekDots())),
     tile(ring(goal, { size: 84, stroke: 8, label: `${Math.round(goal * 100)}%` }),
@@ -113,7 +114,7 @@ export function render(main) {
   // ---------- Jump back in ----------
   const recentIds = s.recentDecks || []; const rank = x => { const r = recentIds.indexOf(x.d.id); return r < 0 ? 1e9 : r; };
   const list = info.slice().sort((a, b) => rank(a) - rank(b) || (b.d.lastStudied || b.d.created || 0) - (a.d.lastStudied || a.d.created || 0)).slice(0, 5);
-  inner.append(rise(h('section', { class: 'hm2-section' },
+  grid.append(rise(h('section', { class: 'hm2-section hm2-box ga-sets' },
     h('div', { class: 'hm2-section-head' }, h('h2', {}, 'Jump back in'), h('button', { class: 'hm2-link', onClick: () => navigate('library') }, `All sets (${decks.length})`, svgIcon('arrowRight', 14))),
     h('div', { class: 'hm2-sets' }, ...list.map(({ d, n, m }, k) => h('button', { class: 'hm2-set', style: { '--c': d.color || 'var(--accent)', '--k': k }, onClick: () => navigate(`set/${d.id}`) },
       h('span', { class: 'hm2-set-ring' }, ring(m.pct, { size: 40, stroke: 4 }), h('span', { class: 'hm2-set-dot' })),
@@ -129,13 +130,13 @@ export function render(main) {
   const line = pts.map((p, k) => (k ? 'L' : 'M') + p.join(' ')).join(' '); const area = `${line} L${W} ${H} L0 ${H} Z`;
   const spark = h('div', { class: 'hm2-spark', html: `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="hm2a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--accent);stop-opacity:.35"/><stop offset="1" style="stop-color:var(--accent);stop-opacity:0"/></linearGradient></defs><path class="area" d="${area}" fill="url(#hm2a)"/><path class="line" d="${line}" fill="none" style="stroke:var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>` });
   const maxF = Math.max(1, ...fc);
-  inner.append(rise(h('section', { class: 'hm2-section' },
+  const fcTotal = fc.reduce((a, b) => a + b, 0); const busiest = fc.indexOf(Math.max(...fc));
+  const mini = h('div', { class: 'hm2-mini-bars' }, ...fc.map((v, k) => h('span', { class: `${v ? '' : 'zero'} ${k === 0 ? 'today' : ''}`, style: { height: Math.max(3, Math.round(v / maxF * 22)) + 'px', '--k': k }, title: `${v} on ${new Date(Date.now() + k * 86400000).toLocaleDateString(undefined, { weekday: 'long' })}` })));
+  grid.append(rise(h('section', { class: 'hm2-section hm2-box ga-rhythm' },
     h('div', { class: 'hm2-section-head' }, h('h2', {}, 'Your rhythm'), h('button', { class: 'hm2-link', onClick: () => navigate('stats') }, 'Statistics', svgIcon('arrowRight', 14))),
-    h('div', { class: 'hm2-week' },
-      h('div', { class: 'hm2-panel' }, h('div', { class: 'hm2-panel-top' }, h('div', {}, h('div', { class: 'hm2-tile-k' }, 'Last 2 weeks'), h('div', { class: 'hm2-tile-big' }, num(total14), h('span', {}, ' reviews'))), h('div', { class: 'hm2-tile-s' }, `${act.filter(Boolean).length} active days`)), spark),
-      h('div', { class: 'hm2-panel' }, h('div', { class: 'hm2-panel-top' }, h('div', {}, h('div', { class: 'hm2-tile-k' }, 'Coming up'), h('div', { class: 'hm2-tile-big' }, num(fc.reduce((a, b) => a + b, 0)), h('span', {}, ' this week'))), null),
-        fc.some(Boolean) ? h('div', { class: 'hm2-bars' }, ...fc.map((v, k) => h('div', { class: 'hm2-bar-col' }, h('span', { class: 'hm2-bar-n' }, v || ''), h('div', { class: `hm2-bar ${v ? '' : 'zero'} ${k === 0 ? 'today' : ''}`, style: { height: Math.max(4, Math.round(v / maxF * 54)) + 'px', '--k': k } }), h('span', { class: 'hm2-bar-d' }, k === 0 ? 'Today' : new Date(Date.now() + k * 86400000).toLocaleDateString(undefined, { weekday: 'short' })))))
-          : h('div', { class: 'hm2-empty' }, 'Reviews you schedule will appear here.'))))));
+    h('div', { class: 'hm2-panel-top' }, h('div', {}, h('div', { class: 'hm2-tile-big' }, num(total14), h('span', {}, ' reviews')), h('div', { class: 'hm2-tile-s' }, `Last 2 weeks · ${act.filter(Boolean).length} active days`))),
+    spark,
+    h('div', { class: 'hm2-coming' }, h('div', {}, h('div', { class: 'hm2-tile-k' }, 'Coming up'), h('div', { class: 'hm2-coming-t' }, fcTotal ? `${fcTotal} this week · busiest ${busiest === 0 ? 'today' : new Date(Date.now() + busiest * 86400000).toLocaleDateString(undefined, { weekday: 'long' })}` : 'Nothing scheduled yet')), mini))));
   main.append(inner);
 }
 
