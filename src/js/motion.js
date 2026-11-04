@@ -31,7 +31,7 @@ export function initMotion() {
 
   // ---- scroll: collapsing large title + reactive edge light ----
   const head = h('div', { class: 'scroll-head', 'aria-hidden': 'true' }, h('span', { class: 'sh-title' })); document.body.append(head);
-  let title = null, titleTop = 0, raf = 0, lastY = 0, lastT = 0, kick = 0, kickRaf = 0;
+  let title = null, titleTop = 0, raf = 0;
   const main = () => document.getElementById('main');
   function scan() {
     if (title) { title.style.transform = ''; title.style.opacity = ''; }
@@ -48,19 +48,9 @@ export function initMotion() {
     title.style.opacity = String(1 - p); head.style.setProperty('--p', p); head.classList.toggle('on', p > .02);
   }
   document.addEventListener('scroll', e => {
-    const t = e.target; const now = performance.now();
+    const t = e.target;
     if (t === main()) { if (!raf) raf = requestAnimationFrame(update); }
-    // velocity -> glow kick
-    const el = t.nodeType === 1 ? t : document.scrollingElement; if (!el) return;
-    const y = el.scrollTop, dt = Math.max(16, now - lastT); const v = Math.abs(y - lastY) / dt; lastY = y; lastT = now;
-    const atEdge = y <= 0 || y + el.clientHeight >= el.scrollHeight - 1;
-    kick = Math.min(1, Math.max(kick, v / 2.5 + (atEdge ? .5 : 0)));
-    if (!kickRaf) kickRaf = requestAnimationFrame(decay);
   }, { capture: true, passive: true });
-  function decay() {
-    const el = document.querySelector('.edge-light'); kick *= .92; if (el) el.style.setProperty('--el-kick', kick.toFixed(3));
-    kickRaf = kick > .01 ? requestAnimationFrame(decay) : (el && el.style.setProperty('--el-kick', '0'), 0);
-  }
   addEventListener('hashchange', () => setTimeout(scan, 60)); addEventListener('resize', () => { place(); scan(); });
   new MutationObserver(() => { clearTimeout(scan.t); scan.t = setTimeout(scan, 40); }).observe(document.getElementById('main') || document.body, { childList: true });
   setTimeout(scan, 300);

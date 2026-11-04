@@ -91,7 +91,7 @@ function wirePointer() {
   const tr = st.track;
   tr.addEventListener('pointerdown', e => {
     const b = e.target.closest('.tb2-item'); if (!b) return;
-    if (st.mini) { e.preventDefault(); setMini(false); return; }
+    if (st.mini) setMini(false);
     b.classList.add('press');
     if (b.classList.contains('primary')) { st.drag = null; return; }
     st.drag = { id: e.pointerId, x0: e.clientX, moved: false, over: b.dataset.id }; tr.setPointerCapture(e.pointerId);
@@ -117,18 +117,17 @@ function wirePointer() {
 }
 
 // ---------- minimise on scroll ----------
-function setMini(on) {
-  if (!st || st.mini === on) return; st.mini = on; st.bar.classList.toggle('mini', on);
-  setTimeout(() => moveLensTo(st.active, { instant: false }), 20); setTimeout(() => moveLensTo(st.active), 380);
-}
+function setMini(on) { if (!st || st.mini === on) return; st.mini = on; st.bar.classList.toggle('condensed', on); }
 function wireScroll() {
   const main = document.getElementById('main'); if (!main || main.__tb2) return; main.__tb2 = true;
   let last = 0, acc = 0;
-  main.addEventListener('scroll', () => {
+  let ticking = false;
+  main.addEventListener('scroll', () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { ticking = false; onScroll(); }); }, { passive: true });
+  function onScroll() {
     const y = main.scrollTop, dy = y - last; last = y;
     if (y < 24) { acc = 0; setMini(false); return; }
     acc = Math.sign(dy) === Math.sign(acc) ? acc + dy : dy;
     if (acc > 36) setMini(true); else if (acc < -28) setMini(false);
-  }, { passive: true });
+  }
   addEventListener('hashchange', () => { last = 0; acc = 0; setMini(false); });
 }
