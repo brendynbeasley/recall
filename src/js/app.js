@@ -29,7 +29,10 @@ export const THEMES = [
   { id: 'system', name: 'System', dark: null }, { id: 'light', name: 'Light', dark: false }, { id: 'dark', name: 'Dark', dark: true }, { id: 'midnight', name: 'Midnight OLED', dark: true },
   { id: 'nord', name: 'Nord', dark: true }, { id: 'dracula', name: 'Dracula', dark: true }, { id: 'solarized-light', name: 'Solarized Light', dark: false }, { id: 'solarized-dark', name: 'Solarized Dark', dark: true },
   { id: 'rose', name: 'Rosé Pine', dark: true }, { id: 'forest', name: 'Forest', dark: true }, { id: 'ocean', name: 'Ocean', dark: true }, { id: 'sepia', name: 'Sepia', dark: false },
+  { id: 'black', name: 'Black', dark: true }, { id: 'graphite', name: 'Graphite', dark: true }, { id: 'cobalt', name: 'Cobalt', dark: true }, { id: 'mocha', name: 'Mocha', dark: true }, { id: 'ember', name: 'Ember', dark: true },
+  { id: 'paper', name: 'Paper', dark: false }, { id: 'sakura', name: 'Sakura', dark: false }, { id: 'lavender', name: 'Lavender', dark: false }, { id: 'matcha', name: 'Matcha', dark: false },
 ];
+export const THEME_OWNS_ACCENT = ['nord', 'dracula', 'solarized-light', 'solarized-dark', 'rose', 'forest', 'ocean', 'sepia', 'cobalt', 'mocha', 'ember', 'sakura', 'lavender', 'matcha'];
 export const ACCENTS = [{ id: 'indigo', hue: 252, hex: '#6366f1' }, { id: 'violet', hue: 270, hex: '#8b5cf6' }, { id: 'fuchsia', hue: 300, hex: '#d946ef' }, { id: 'pink', hue: 330, hex: '#ec4899' }, { id: 'rose', hue: 350, hex: '#f43f5e' }, { id: 'orange', hue: 24, hex: '#f97316' }, { id: 'amber', hue: 38, hex: '#f59e0b' }, { id: 'lime', hue: 84, hex: '#84cc16' }, { id: 'emerald', hue: 160, hex: '#10b981' }, { id: 'teal', hue: 174, hex: '#14b8a6' }, { id: 'cyan', hue: 190, hex: '#06b6d4' }, { id: 'sky', hue: 200, hex: '#0ea5e9' }, { id: 'blue', hue: 217, hex: '#3b82f6' }];
 const mq = window.matchMedia('(prefers-color-scheme: dark)');
 export function applyTheme() {
@@ -40,14 +43,14 @@ export function applyTheme() {
   const styleEl = $('#custom-theme-style') || document.head.appendChild(h('style', { id: 'custom-theme-style' }));
   styleEl.textContent = custom ? `:root{${Object.entries(custom.vars || {}).map(([k, v]) => `${k}:${v};`).join('')}}` : '';
   const t = THEMES.find(t => t.id === (custom ? custom.base : theme));
-  const themeSetsAccent = ['nord', 'dracula', 'solarized-light', 'solarized-dark', 'rose', 'forest', 'ocean', 'sepia'].includes(custom ? custom.base : theme);
+  const themeSetsAccent = THEME_OWNS_ACCENT.includes(custom ? custom.base : theme);
   if (!themeSetsAccent || s.accentOverride) { root.style.setProperty('--accent-h', s.accentHue); root.style.setProperty('--accent-s', '86%'); root.style.setProperty('--accent-l', (t && t.dark === false) ? '56%' : '64%'); root.style.setProperty('--accent-text', '#fff'); }
   else { root.style.removeProperty('--accent-h'); root.style.removeProperty('--accent-s'); root.style.removeProperty('--accent-l'); root.style.removeProperty('--accent-text'); }
   root.style.setProperty('--radius', `${s.radius}px`); root.style.setProperty('--radius-sm', `${Math.max(4, Math.round(s.radius * 0.64))}px`); root.style.setProperty('--radius-lg', `${Math.round(s.radius * 1.55)}px`);
   root.style.setProperty('--font-scale', s.fontScale); root.style.setProperty('--font-ui', s.uiFont === 'System' ? '"Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif' : `"${s.uiFont}", "Segoe UI", system-ui, sans-serif`);
   root.style.setProperty('--font-card', s.cardFont === 'System' ? 'var(--font-ui)' : `"${s.cardFont}", var(--font-ui)`);
   root.style.setProperty('--glass-blur', s.glass ? '18px' : '0px');
-  document.body.classList.toggle('reduced-motion', !!s.reducedMotion || !s.animations); document.body.classList.toggle('no-fx', !s.backgroundFx);
+  document.body.classList.toggle('reduced-motion', !!s.reducedMotion || !s.animations); const amb = s.ambient || (s.backgroundFx === false ? 'off' : 'vivid'); document.body.classList.toggle('no-fx', amb === 'off'); document.body.classList.toggle('ambient-off', amb === 'off'); document.body.classList.toggle('ambient-subtle', amb === 'subtle');
   document.body.classList.toggle('density-compact', s.density === 'compact'); document.body.classList.toggle('density-spacious', s.density === 'spacious');
   document.body.classList.toggle('sidebar-collapsed', !!s.sidebarCollapsed); document.body.classList.toggle('zen', !!s.zenMode);
 }
