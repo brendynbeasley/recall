@@ -52,7 +52,7 @@ export function applyTheme() {
   root.style.setProperty('--glass-blur', s.glass ? '18px' : '0px');
   document.body.classList.toggle('reduced-motion', !!s.reducedMotion || !s.animations); const amb = s.ambient || (s.backgroundFx === false ? 'off' : 'vivid'); document.body.classList.toggle('no-fx', amb === 'off'); document.body.classList.toggle('ambient-off', amb === 'off'); document.body.classList.toggle('ambient-subtle', amb === 'subtle');
   document.body.classList.toggle('density-compact', s.density === 'compact'); document.body.classList.toggle('density-spacious', s.density === 'spacious');
-  document.body.classList.toggle('sidebar-collapsed', !!s.sidebarCollapsed); document.body.classList.toggle('zen', !!s.zenMode);
+  document.body.classList.toggle('sidebar-collapsed', !!s.sidebarCollapsed); document.body.classList.toggle('zen', !!s.zenMode); requestAnimationFrame(() => { const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(); const m = document.querySelector('meta[name="theme-color"]'); if (m && bg) m.setAttribute('content', bg); document.documentElement.style.backgroundColor = bg; });
 }
 mq.addEventListener('change', () => { if (S().theme === 'system') applyTheme(); });
 
@@ -241,7 +241,10 @@ async function boot() {
   sync.events.on('remote', res => { if (res.touched.has('kv') || res.replaced) { loadSettings(); applyTheme(); } if (res.replaced) ensureDefaults(); renderSidebar(); if (!app.studyActive) render(); });
   initSync();
   // Hosted web app: cache files for offline use (not in Electron, which loads from disk)
-  if (!native && 'serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(e => console.warn('service worker', e));
+  if (!native && 'serviceWorker' in navigator && /^https?:$/.test(location.protocol)) { const hadController = !!navigator.serviceWorker.controller; let reloading = false;
+    const reloadNow = () => { if (reloading) return; reloading = true; location.reload(); };
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadController) return; if (app.studyActive) { const once = () => { if (!app.studyActive) { removeEventListener('hashchange', once); reloadNow(); } }; addEventListener('hashchange', once); } else reloadNow(); });
+    navigator.serviceWorker.register('sw.js').then(r => { document.addEventListener('visibilitychange', () => { if (!document.hidden) r.update().catch(() => {}); }); }).catch(e => console.warn('service worker', e)); }
   const s = S(); const firstRun = !s.onboarded;
   if (firstRun && db.decks.size === 0) { createSampleDecks(); }
   renderTitlebar();
