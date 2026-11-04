@@ -560,3 +560,5 @@ body.reduced-motion .edge-light .el-bloom { animation: none !important; transiti
 .edge-light.drawn:not(.boost) .el-side, .edge-light.drawn:not(.boost) .el-cone { animation: elRest 8s ease-in-out infinite; }
 @keyframes elRest { 0%, 100% { filter: blur(22px) brightness(.9); } 50% { filter: blur(22px) brightness(1.15); } }
 body.reduced-motion .edge-light > div { transition: opacity .3s !important; animation: none !important; }
+
+.edge-light.reset, .edge-light.reset * { transition: none !important; animation: none !important; }
