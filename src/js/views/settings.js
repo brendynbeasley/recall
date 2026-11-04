@@ -24,7 +24,7 @@ export function render(main, route) {
     applyTheme(); draw(); toast('Appearance reset');
   };
   const draw = () => {
-    inner.innerHTML = ''; const s = S();
+    inner.innerHTML = ''; const s = S(); inner.classList.toggle('ap-fit', tab === 'appearance');
     inner.append(pageHeader('Settings', 'Make Recall yours. Every option is saved instantly.'));
     inner.append(tabs([{ id: 'appearance', label: 'Appearance', icon: 'palette' }, { id: 'study', label: 'Study', icon: 'brain' }, { id: 'audio', label: 'Audio & speech', icon: 'volume' }, { id: 'startup', label: 'Startup & window', icon: 'layout' }, { id: 'data', label: 'Data & backups', icon: 'database' }, { id: 'sync', label: 'Sync', icon: 'cloud' }, { id: 'about', label: 'About', icon: 'info' }], tab, t => { tab = t; history.replaceState(null, '', `#/settings?tab=${t}`); draw(); }));
     const sec = (title, desc, ...kids) => h('div', { class: 'settings-section panel' }, h('h2', {}, title), desc ? h('p', {}, desc) : null, ...kids);
