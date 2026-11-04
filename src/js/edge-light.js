@@ -20,7 +20,7 @@ function mk(tag, attrs) { const n = document.createElementNS(NS, tag); for (cons
 export function ensureEdgeLight() {
   if (!el) {
     el = document.createElement('div'); el.className = 'edge-light'; el.setAttribute('aria-hidden', 'true');
-    el.innerHTML = '<div class="el-wash"></div>';
+    el.innerHTML = '<div class="el-bloom"></div><div class="el-wash"></div>';
     svg = mk('svg', { class: 'el-svg', preserveAspectRatio: 'none' });
     const defs = mk('defs', {});
     const g = mk('linearGradient', { id: 'elGrad', gradientUnits: 'userSpaceOnUse', x1: 0, x2: 0 });
