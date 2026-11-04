@@ -520,10 +520,13 @@ html[data-theme="black"] .ap-pv-bg { display: none; }
   background: linear-gradient(0deg, color-mix(in srgb, var(--accent) 95%, #fff) 0%, color-mix(in srgb, var(--accent) 55%, transparent) 22%, transparent 62%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: egBreathe 5s ease-in-out infinite; }
 .hm2-hero > .hm2-mesh::before { z-index: 0; }
-:is(.hm2-hero, .hm2-card.d0, .sx-today, .rest-screen) { background-image: radial-gradient(70% 55% at 50% 118%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 72%); }
+:is(.hm2-hero, .sx-today, .rest-screen) { background-image: radial-gradient(70% 55% at 50% 118%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 72%); }
 :is(.ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active) { background-image: radial-gradient(90% 80% at 50% 130%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%); border-color: color-mix(in srgb, var(--accent) 40%, var(--border)) !important; box-shadow: 0 12px 30px -18px color-mix(in srgb, var(--accent) 80%, transparent); }
 @keyframes egBreathe { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
 body.no-edge-glow :is(.hm2-card.d0, .sx-today, .rest-screen, .ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active)::before, body.no-edge-glow .hm2-hero > .hm2-mesh::before { display: none; }
 body.no-edge-glow :is(.hm2-hero, .hm2-card.d0, .sx-today, .rest-screen, .ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active) { background-image: none; }
 body.reduced-motion :is(.hm2-card.d0, .sx-today, .rest-screen, .ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active)::before { animation: none; }
 .hm2-hero > .hm2-mesh { border-radius: inherit; }
+
+.hm2-card.d0 { background: radial-gradient(70% 55% at 50% 118%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 72%), linear-gradient(155deg, color-mix(in srgb, var(--card-face) 92%, var(--c)), var(--card-face) 60%); }
+body.no-edge-glow .hm2-card.d0 { background: linear-gradient(155deg, color-mix(in srgb, var(--card-face) 92%, var(--c)), var(--card-face) 60%); }
