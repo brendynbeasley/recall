@@ -530,3 +530,33 @@ body.edge-accent .edge-light { --el-tone: var(--accent); }
 .edge-light.boost .el-wash { box-shadow: inset 0 0 100px color-mix(in srgb, var(--el-tone) 36%, transparent), inset 0 0 22px color-mix(in srgb, var(--el-tone) 34%, transparent); }
 .edge-light.boost .el-glow { stroke-width: 8; }
 body.reduced-motion .edge-light .el-bloom { animation: none !important; transition: opacity .3s; }
+
+/* ===== Edge light v4: recreated from the reference animation, in the theme accent ===== */
+.edge-light, body.edge-accent .edge-light { --el-tone: var(--accent); --el-hot: color-mix(in srgb, var(--accent) 55%, #fff); --el-neutral: var(--text); }
+.edge-light .el-bloom, .edge-light .el-wash { display: none !important; }
+.edge-light > div { position: absolute; pointer-events: none; }
+.el-glow { stroke-width: 5; opacity: .5; } .edge-light.boost .el-glow { stroke-width: 7; opacity: .7; }
+.el-line { stroke-width: 1.2; opacity: .85; } .edge-light.boost .el-line { stroke-width: 1.5; opacity: 1; }
+/* 1-2: a faint orb below the centre that sinks and grows */
+.el-orb { left: 50%; top: 70%; width: 22vmin; height: 22vmin; margin: -11vmin 0 0 -11vmin; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--el-tone) 45%, transparent) 0%, color-mix(in srgb, var(--el-tone) 16%, transparent) 40%, transparent 70%); filter: blur(10px); opacity: 0; transform: scale(.35); transition: top .55s cubic-bezier(.3,.7,.2,1), transform .6s cubic-bezier(.3,.7,.2,1), opacity .5s ease; }
+.edge-light.s1 .el-orb { opacity: .55; transform: scale(1); }
+.edge-light.s2 .el-orb { top: 88%; opacity: .75; transform: scale(2); }
+.edge-light.s3 .el-orb { top: 97%; opacity: 0; transform: scale(3.4); }
+/* 3: a soft cone rising from the bottom edge to a point near the centre */
+.el-cone { left: 0; right: 0; bottom: 0; height: 58%; filter: blur(34px); transform-origin: 50% 100%; transform: scale(.12, 0); opacity: 0; transition: transform .8s cubic-bezier(.2,.8,.2,1), opacity .7s ease; }
+.el-cone i { position: absolute; inset: 0; clip-path: polygon(50% 0, 100% 100%, 0 100%); background: linear-gradient(to top, color-mix(in srgb, var(--el-tone) 30%, transparent), color-mix(in srgb, var(--el-tone) 10%, transparent) 55%, transparent); }
+.edge-light.s3 .el-cone { transform: scale(.75, 1); opacity: 1; }
+.edge-light.drawn .el-cone { transform: scale(1, .8); opacity: .5; }
+/* 4: light flows into the corners and up the sides; the centre settles darker */
+.el-side { bottom: 0; width: 18%; height: 72%; filter: blur(22px); opacity: 0; transition: opacity 1.1s ease .1s, transform 1.3s cubic-bezier(.2,.8,.2,1);
+  -webkit-mask-image: linear-gradient(to top, #000 25%, transparent); mask-image: linear-gradient(to top, #000 25%, transparent); }
+.el-side.l { left: 0; background: linear-gradient(to right, color-mix(in srgb, var(--el-tone) 28%, transparent), transparent); transform: translate(35%, 20%); }
+.el-side.r { right: 0; background: linear-gradient(to left, color-mix(in srgb, var(--el-tone) 28%, transparent), transparent); transform: translate(-35%, 20%); }
+.edge-light.drawn .el-side { opacity: 1; transform: none; }
+.el-base { left: 0; right: 0; bottom: 0; height: 13%; background: linear-gradient(to top, color-mix(in srgb, var(--el-tone) 22%, transparent), transparent); filter: blur(12px); opacity: 0; transition: opacity 1s ease .2s; }
+.edge-light.drawn .el-base { opacity: 1; }
+/* resting in the app: same shape, quieter, slow breath */
+.edge-light:not(.boost) { opacity: .7; }
+.edge-light.drawn:not(.boost) .el-side, .edge-light.drawn:not(.boost) .el-cone { animation: elRest 8s ease-in-out infinite; }
+@keyframes elRest { 0%, 100% { filter: blur(22px) brightness(.9); } 50% { filter: blur(22px) brightness(1.15); } }
+body.reduced-motion .edge-light > div { transition: opacity .3s !important; animation: none !important; }

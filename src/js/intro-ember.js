@@ -15,9 +15,9 @@ export function playEmberIntro({ onDone, skipable = true } = {}) {
   let done = false; const timers = [];
   const at = (ms, fn) => timers.push(setTimeout(fn, reduced ? Math.min(ms, 300) : ms));
   requestAnimationFrame(() => wrap.classList.add('in'));
-  at(250, () => drawEdgeLight({ duration: reduced ? 1 : 1500 }));
-  at(1050, () => wrap.classList.add('mark'));
-  at(2500, finish);
+  at(200, () => drawEdgeLight({ duration: reduced ? 1 : 1300 }));
+  at(1700, () => wrap.classList.add('mark'));
+  at(3300, finish);
   function finish() {
     if (done) return; done = true; timers.forEach(clearTimeout); removeEventListener('keydown', onKey);
     wrap.classList.add('out'); settleEdgeLight();
