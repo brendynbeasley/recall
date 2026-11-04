@@ -514,7 +514,7 @@ html[data-theme="black"] .ap-pv-bg { display: none; }
 .ap-intro-pv.off { background: var(--surface-3); } .ap-intro-pv.off i { display: none; }
 
 /* ===== Edge light: glow rising from the bottom edge (from the Ember intro) ===== */
-:is(.hm2-hero, .hm2-card.d0, .sx-today, .rest-screen, .ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active, .cf-result.ok) { position: relative; isolation: isolate; }
+:is(.sx-today, .rest-screen, .ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active) { position: relative; isolation: isolate; }
 :is(.hm2-card.d0, .sx-today, .rest-screen, .ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active)::before,
 .hm2-hero > .hm2-mesh::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.2px; pointer-events: none; z-index: 2;
   background: linear-gradient(0deg, color-mix(in srgb, var(--accent) 95%, #fff) 0%, color-mix(in srgb, var(--accent) 55%, transparent) 22%, transparent 62%);
