@@ -530,3 +530,5 @@ body.reduced-motion :is(.hm2-card.d0, .sx-today, .rest-screen, .ap-chip.on, .ap-
 
 .hm2-card.d0 { background: radial-gradient(70% 55% at 50% 118%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 72%), linear-gradient(155deg, color-mix(in srgb, var(--card-face) 92%, var(--c)), var(--card-face) 60%); }
 body.no-edge-glow .hm2-card.d0 { background: linear-gradient(155deg, color-mix(in srgb, var(--card-face) 92%, var(--c)), var(--card-face) 60%); }
+
+.ap-intro-pv.ember { background: #000; } .ap-intro-pv.ember i { width: calc(100% - 6px); height: calc(100% - 6px); border-radius: 7px; background: none; border: 1px solid transparent; background: linear-gradient(#000,#000) padding-box, linear-gradient(0deg, color-mix(in srgb, var(--accent) 40%, #fff), color-mix(in srgb, var(--accent) 60%, transparent) 40%, transparent 95%) border-box; box-shadow: inset 0 -10px 16px -8px var(--accent); }
