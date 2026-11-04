@@ -8,8 +8,8 @@
 import { h, svgIcon } from './utils.js';
 
 const reduced = () => document.body.classList.contains('reduced-motion');
-const PRESS = '.btn, .icon-btn, .hm2-set, .hm2-tile, .hm2-cta, .deck-card, .folder-card, .deck-row, .sx-tile, .ap-chip, .ap-amb, .ap-intro-opt, .ap-theme, .menu-item, .palette-item, .choice-item, .seg, .tab, .cs-opt, .ap-reset, .hm2-link';
-const SPOT = '.hm2-tile, .hm2-box, .deck-card, .folder-card, .deck-row, .sx-tile, .panel, .cs-opt';
+const PRESS = '.lb-card, .lb-folder, .btn, .icon-btn, .hm2-set, .hm2-tile, .hm2-cta, .deck-card, .folder-card, .deck-row, .sx-tile, .ap-chip, .ap-amb, .ap-intro-opt, .ap-theme, .menu-item, .palette-item, .choice-item, .seg, .tab, .cs-opt, .ap-reset, .hm2-link';
+const SPOT = '.lb-card, .lb-folder, .hm2-tile, .hm2-box, .deck-card, .folder-card, .deck-row, .sx-tile, .panel, .cs-opt';
 
 export function initMotion() {
   if (window.__motion) return; window.__motion = true;
