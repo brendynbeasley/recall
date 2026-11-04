@@ -288,3 +288,20 @@
 .cf-calib-bar { height: 8px; border-radius: 4px; background: var(--surface-3); overflow: hidden; } .cf-calib-bar > div { height: 100%; background: var(--accent); }
 .cf-calib-row b { text-align: right; }
 @media (max-width: 760px) { .cf-opts { grid-template-columns: 1fr; } }
+
+/* Unscramble v2: bigger board, tap to remove, clear start letter */
+.study-body:has(.us-slots) .lg-stage { max-width: 1000px; min-height: 100%; justify-content: center; gap: clamp(22px, 4vh, 40px); padding-bottom: 4vh; }
+.study-body:has(.us-slots) .lg-prompt { padding: clamp(24px, 4vh, 40px) 32px; }
+.us-slots { gap: clamp(14px, 2vw, 26px); }
+.us-word { gap: clamp(6px, .8vw, 10px); }
+.us-slot { min-width: clamp(42px, 5vw, 60px); height: clamp(54px, 7.5vh, 72px); font-size: clamp(1.5rem, 2.6vw, 2.1rem); border: 0; border-bottom: 3px solid var(--border-strong); color: var(--text); cursor: default; font-family: inherit; }
+.us-slot.filled { cursor: pointer; border-color: var(--accent); }
+.us-slot.filled:active { transform: scale(.94); }
+.us-slot.start { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent); }
+.us-slot.word { min-width: clamp(100px, 12vw, 150px); font-size: clamp(1.1rem, 1.8vw, 1.4rem); }
+.us-pieces { gap: clamp(10px, 1.4vw, 16px); max-width: 960px; }
+.us-piece { position: relative; min-width: clamp(58px, 6.5vw, 80px); height: clamp(58px, 8.5vh, 80px); font-size: clamp(1.6rem, 2.8vw, 2.2rem); border-radius: 16px; }
+.us-piece.word { font-size: clamp(1.1rem, 1.8vw, 1.4rem); padding: 0 20px; }
+.us-piece.used { opacity: .18; box-shadow: none; }
+.us-piece.first { border-color: var(--accent); box-shadow: 0 3px 0 color-mix(in srgb, var(--accent) 70%, black); color: var(--accent); }
+.us-first-tag { position: absolute; top: -9px; left: 50%; transform: translateX(-50%); font-size: .58rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 2px 6px; border-radius: 6px; background: var(--accent); color: #fff; line-height: 1.2; }

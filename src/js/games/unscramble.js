@@ -42,9 +42,8 @@ export async function start(ctx) {
     frame.body.append(h('div', { class: 'lg-stage' },
       h('div', { class: 'lg-prompt' }, h('div', { class: 'q-label' }, 'Definition'), renderSide(cur, 'definition', { big: true })),
       slotsView(),
-      h('div', { class: 'us-pieces' }, ...tokens.map(tok => h('button', { class: `us-piece ${cur._byWord ? 'word' : ''}`, disabled: tok.used, onClick: () => pick(tok) }, tok.t))),
+      h('div', { class: 'us-pieces' }, ...tokens.map(tok => h('button', { class: `us-piece ${cur._byWord ? 'word' : ''} ${tok.used ? 'used' : ''} ${tok.i === 0 ? 'first' : ''}`, onClick: () => tok.used ? removeAt(built.indexOf(tok)) : pick(tok) }, tok.i === 0 ? h('span', { class: 'us-first-tag' }, 'Start') : null, tok.t))),
       h('div', { class: 'lg-actions' },
-        h('button', { class: 'btn', disabled: !built.length, onClick: undo }, svgIcon('undo', 16), 'Undo'),
         h('button', { class: 'btn', onClick: hint }, svgIcon('sparkles', 16), 'Hint'),
         h('button', { class: 'btn btn-ghost', onClick: giveUp }, 'Show answer'))));
   }
@@ -67,6 +66,7 @@ export async function start(ctx) {
     const need = cur._target[built.length]; const tok = tokens.find(t => !t.used && t.t.toLowerCase() === need.toLowerCase()); if (!tok) return;
     hints++; tok.used = true; built.push(tok); if (built.length === cur._target.length) check(); else draw();
   }
+  function removeAt(k) { if (lock || k < 0 || !built[k]) return; built[k].used = false; built.splice(k, 1); draw(); }
   function undo() { if (lock) return; const t = built.pop(); if (t) t.used = false; draw(); }
   function giveUp() {
     if (lock) return; lock = true; if (!missed.includes(cur)) missed.push(cur); recordMastery(cur, false, { mode: 'unscramble' }); tracker.answer(false); sfx.wrong();
