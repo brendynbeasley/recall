@@ -277,7 +277,8 @@ export function renderTabbar() {
     item('home', 'home', 'Home', () => navigate('home'), totalDue || null),
     item('library', 'library', 'Library', () => navigate('library')),
     h('button', { class: 'tab-create', 'aria-label': 'Create', onClick: () => createSetFlow() }, svgIcon('plus', 24)),
-    item('search', 'search', 'Search', () => openPalette()),
     item('stats', 'stats', 'Stats', () => navigate('stats')),
     item('settings', 'settings', 'Settings', () => navigate('settings')));
+  let sb = document.getElementById('tab-search'); if (!sb) { sb = h('button', { id: 'tab-search', class: 'tab-search', 'aria-label': 'Search', onClick: () => openPalette() }, svgIcon('search', 22)); document.body.append(sb); }
+  sb.classList.toggle('active', active('search'));
 }
