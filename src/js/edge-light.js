@@ -11,8 +11,8 @@ function corner() {
 function geometry() {
   const W = innerWidth, H = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--app-h')) || innerHeight;
   const i = 1, r = corner(), cx = W / 2;
-  const right = `M${cx},${H - i} L${W - r},${H - i} A${r},${r} 0 0 0 ${W - i},${H - r} L${W - i},${r} A${r},${r} 0 0 0 ${W - r},${i} L${cx},${i}`;
-  const left = `M${cx},${H - i} L${r},${H - i} A${r},${r} 0 0 1 ${i},${H - r} L${i},${r} A${r},${r} 0 0 1 ${r},${i} L${cx},${i}`;
+  const right = `M${cx},${H - i} L${W - r},${H - i} A${r},${r} 0 0 0 ${W - i},${H - r} L${W - i},${r} A${r},${r} 0 0 0 ${W - r},${i} L${cx - 3},${i}`;
+  const left = `M${cx},${H - i} L${r},${H - i} A${r},${r} 0 0 1 ${i},${H - r} L${i},${r} A${r},${r} 0 0 1 ${r},${i} L${cx + 3},${i}`;
   return { W, H, right, left };
 }
 function mk(tag, attrs) { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); return n; }
@@ -44,7 +44,7 @@ function layout() {
 let stageTimers = [];
 export function drawEdgeLight({ duration = 1300 } = {}) {
   ensureEdgeLight(); stageTimers.forEach(clearTimeout); stageTimers = [];
-  el.classList.remove('drawn', 'drawing', 's1', 's2', 's3'); void el.offsetWidth;
+  el.classList.add('reset'); el.classList.remove('drawn', 'drawing', 's1', 's2', 's3'); void el.offsetWidth; el.classList.remove('reset');
   el.style.setProperty('--el-draw', duration + 'ms'); el.classList.add('boost', 'over');
   const at = (ms, fn) => stageTimers.push(setTimeout(fn, ms));
   at(20, () => el.classList.add('s1'));
