@@ -17,7 +17,7 @@ export function initMotion() {
   let pressed = null, x0 = 0, y0 = 0;
   const release = () => { if (pressed) { pressed.classList.remove('is-pressed'); pressed = null; } };
   document.addEventListener('pointerdown', e => {
-    const el = e.target.closest(PRESS); if (!el || el.disabled || el.closest('.tb2')) return;
+    const el = e.target.closest(PRESS); if (!el || el.disabled || el.closest('.dock')) return;
     pressed = el; x0 = e.clientX; y0 = e.clientY; el.classList.add('is-pressed');
     const s = e.target.closest(SPOT); if (s) spot(s, e);
   }, { passive: true });
@@ -69,13 +69,13 @@ export function openCreateSheet({ origin, onPick }) {
     opt('import', 'upload', 'Import', 'Quizlet, Anki, CSV or pasted text', '#10b981'),
     opt('folder', 'folderPlus', 'New folder', 'Group sets by class or topic', '#f59e0b'));
   sheet = h('div', { class: 'cs-scrim', onPointerdown: e => { if (e.target === sheet) closeCreateSheet(); } }, card);
-  document.body.append(sheet); document.querySelector('.tb2-item.primary')?.classList.add('open');
+  document.body.append(sheet); document.querySelector('.dk-orb')?.classList.add('open');
   requestAnimationFrame(() => requestAnimationFrame(() => sheet && sheet.classList.add('show')));
   addEventListener('keydown', escClose);
 }
 function escClose(e) { if (e.key === 'Escape') closeCreateSheet(); }
 export function closeCreateSheet() {
   if (!sheet) return; const s = sheet; sheet = null; removeEventListener('keydown', escClose);
-  s.classList.remove('show'); document.querySelector('.tb2-item.primary')?.classList.remove('open');
+  s.classList.remove('show'); document.querySelector('.dk-orb')?.classList.remove('open');
   setTimeout(() => s.remove(), 380);
 }
