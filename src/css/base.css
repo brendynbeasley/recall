@@ -281,9 +281,14 @@ html, body { overscroll-behavior: none; touch-action: pan-x pan-y; }
 #app { position: fixed; inset: 0; height: auto; }
 
 /* iPadOS overlays/blurs the top of installed web apps: drop the titlebar below it */
-body.standalone { --titlebar-h: calc(48px + env(safe-area-inset-top) + 32px); }
-body.standalone .titlebar { padding-top: calc(env(safe-area-inset-top) + 32px); }
+body.standalone { --titlebar-h: calc(48px + env(safe-area-inset-top) + 14px); }
+body.standalone .titlebar { padding-top: calc(env(safe-area-inset-top) + 14px); }
 
 /* Always-visible way out of Zen mode */
 .zen-exit { display: none; position: fixed; z-index: 70; left: calc(16px + env(safe-area-inset-left)); bottom: calc(16px + env(safe-area-inset-bottom)); padding: 10px 16px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); font: 600 .85rem var(--font-ui); box-shadow: var(--shadow-lg); cursor: pointer; }
 body.zen:not(.study-mode) .zen-exit { display: block; }
+
+/* Extend the app under the iPad home-bar area so no empty strip shows */
+#app { bottom: calc(-1 * env(safe-area-inset-bottom)); }
+.sidebar { padding-bottom: calc(14px + 2 * env(safe-area-inset-bottom)); }
+.main { padding-bottom: calc(2 * env(safe-area-inset-bottom)); }
