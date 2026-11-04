@@ -499,3 +499,31 @@ html[data-theme="black"] .ap-pv-bg { display: none; }
 .ap-seg-btn > span:not(.icon) { display: none; }
 .ap-seg-btn.on { flex: 2.2; gap: 7px; } .ap-seg-btn.on > span:not(.icon) { display: inline; font-size: .82rem; }
 .ap-seg-btn .icon { width: 18px; height: 18px; }
+
+/* Intro picker */
+.ap-intro { padding: 12px 0 14px; }
+.ap-intro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.ap-intro-opt { display: flex; flex-direction: column; gap: 2px; padding: 7px 7px 10px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); text-align: left; cursor: pointer; }
+.ap-intro-opt.on { border-color: var(--accent); }
+.ap-intro-opt b { font-size: .85rem; padding: 0 4px; margin-top: 6px; } .ap-intro-opt > span:last-child { font-size: .72rem; color: var(--text-muted); padding: 0 4px; }
+.ap-intro-pv { position: relative; height: 54px; border-radius: 9px; background: #000; overflow: hidden; display: grid; place-items: center; }
+.ap-intro-pv i { width: 54%; height: 58%; border-radius: 7px; border: 1px solid transparent; }
+.ap-intro-pv.ember i { border-color: transparent; background: radial-gradient(80% 70% at 50% 110%, color-mix(in srgb, var(--accent) 55%, transparent), transparent 70%) padding-box, linear-gradient(0deg, var(--accent), transparent 85%) border-box; animation: apEmber 2.6s ease-in-out infinite; }
+@keyframes apEmber { 50% { filter: brightness(1.5); } }
+.ap-intro-pv.classic { background: radial-gradient(60% 80% at 50% 50%, #1b1f3a, #000); } .ap-intro-pv.classic i { width: 30%; height: 40%; background: color-mix(in srgb, var(--accent) 60%, #222); transform: rotate(-10deg); box-shadow: 18px 6px 0 -2px color-mix(in srgb, var(--accent-2) 50%, #222), -18px 8px 0 -3px #333; }
+.ap-intro-pv.off { background: var(--surface-3); } .ap-intro-pv.off i { display: none; }
+
+/* ===== Edge light: glow rising from the bottom edge (from the Ember intro) ===== */
+:is(.hm2-hero, .hm2-card.d0, .sx-today, .rest-screen, .ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active, .cf-result.ok) { position: relative; isolation: isolate; }
+:is(.hm2-card.d0, .sx-today, .rest-screen, .ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active)::before,
+.hm2-hero > .hm2-mesh::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.2px; pointer-events: none; z-index: 2;
+  background: linear-gradient(0deg, color-mix(in srgb, var(--accent) 95%, #fff) 0%, color-mix(in srgb, var(--accent) 55%, transparent) 22%, transparent 62%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: egBreathe 5s ease-in-out infinite; }
+.hm2-hero > .hm2-mesh::before { z-index: 0; }
+:is(.hm2-hero, .hm2-card.d0, .sx-today, .rest-screen) { background-image: radial-gradient(70% 55% at 50% 118%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 72%); }
+:is(.ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active) { background-image: radial-gradient(90% 80% at 50% 130%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%); border-color: color-mix(in srgb, var(--accent) 40%, var(--border)) !important; box-shadow: 0 12px 30px -18px color-mix(in srgb, var(--accent) 80%, transparent); }
+@keyframes egBreathe { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
+body.no-edge-glow :is(.hm2-card.d0, .sx-today, .rest-screen, .ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active)::before, body.no-edge-glow .hm2-hero > .hm2-mesh::before { display: none; }
+body.no-edge-glow :is(.hm2-hero, .hm2-card.d0, .sx-today, .rest-screen, .ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active) { background-image: none; }
+body.reduced-motion :is(.hm2-card.d0, .sx-today, .rest-screen, .ap-chip.on, .ap-amb.active, .ap-intro-opt.on, .ap-theme.active)::before { animation: none; }
+.hm2-hero > .hm2-mesh { border-radius: inherit; }
