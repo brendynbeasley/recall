@@ -494,3 +494,14 @@ body.reduced-motion .edge-light .el-wash { animation: none !important; }
 .edge-light.boost .el-line { stroke-width: 2; }
 .edge-light.boost .el-glow { stroke-width: 10; opacity: 1; }
 .edge-light.boost .el-wash { box-shadow: inset 0 0 120px color-mix(in srgb, var(--accent) 55%, transparent), inset 0 0 28px color-mix(in srgb, var(--accent) 45%, transparent); }
+
+/* Centre bloom: glow wells up at the bottom middle first, then spreads outward as the line runs up the sides */
+.el-bloom { position: absolute; left: 50%; bottom: 0; width: 130%; height: 60%; transform-origin: 50% 100%; transform: translateX(-50%) scale(.06, .25); opacity: 0; pointer-events: none;
+  background: radial-gradient(50% 100% at 50% 100%, color-mix(in srgb, var(--el-hot) 70%, transparent) 0%, color-mix(in srgb, var(--accent) 45%, transparent) 18%, color-mix(in srgb, var(--accent) 14%, transparent) 48%, transparent 72%);
+  filter: blur(14px); transition: transform 2s cubic-bezier(.16, .84, .24, 1), opacity .9s ease; }
+.edge-light.drawn .el-bloom { transform: translateX(-50%) scale(1, .42); opacity: .5; }
+.edge-light.boost.drawn .el-bloom { transform: translateX(-50%) scale(1, 1); opacity: 1; }
+.edge-light .el-wash { transition-delay: .7s; }
+.edge-light.drawn:not(.boost) .el-bloom { animation: elBloom 9s ease-in-out infinite; }
+@keyframes elBloom { 0%, 100% { opacity: .42; transform: translateX(-50%) scale(1, .4); } 50% { opacity: .58; transform: translateX(-50%) scale(1.06, .48); } }
+body.reduced-motion .edge-light .el-bloom { animation: none !important; transition: opacity .3s; }
