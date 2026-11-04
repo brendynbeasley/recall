@@ -20,7 +20,7 @@ function mk(tag, attrs) { const n = document.createElementNS(NS, tag); for (cons
 export function ensureEdgeLight() {
   if (!el) {
     el = document.createElement('div'); el.className = 'edge-light'; el.setAttribute('aria-hidden', 'true');
-    el.innerHTML = '<div class="el-bloom"></div><div class="el-wash"></div>';
+    el.innerHTML = '<div class="el-orb"></div><div class="el-cone"><i></i></div><div class="el-side l"></div><div class="el-side r"></div><div class="el-base"></div>';
     svg = mk('svg', { class: 'el-svg', preserveAspectRatio: 'none' });
     const defs = mk('defs', {});
     const g = mk('linearGradient', { id: 'elGrad', gradientUnits: 'userSpaceOnUse', x1: 0, x2: 0 });
@@ -41,11 +41,17 @@ function layout() {
   paths.forEach(p => p.setAttribute('d', p.classList.contains('right') ? right : left));
 }
 // Intro: draw the line from the bottom centre, outward and up both sides.
-export function drawEdgeLight({ duration = 1500 } = {}) {
-  ensureEdgeLight(); el.classList.remove('drawn', 'drawing'); void el.offsetWidth;
-  el.style.setProperty('--el-draw', duration + 'ms'); el.classList.add('drawing', 'boost', 'over');
-  requestAnimationFrame(() => el.classList.add('drawn'));
+let stageTimers = [];
+export function drawEdgeLight({ duration = 1300 } = {}) {
+  ensureEdgeLight(); stageTimers.forEach(clearTimeout); stageTimers = [];
+  el.classList.remove('drawn', 'drawing', 's1', 's2', 's3'); void el.offsetWidth;
+  el.style.setProperty('--el-draw', duration + 'ms'); el.classList.add('boost', 'over');
+  const at = (ms, fn) => stageTimers.push(setTimeout(fn, ms));
+  at(20, () => el.classList.add('s1'));
+  at(420, () => el.classList.add('s2'));
+  at(820, () => el.classList.add('s3'));
+  at(1250, () => el.classList.add('drawing', 'drawn'));
 }
-export function settleEdgeLight() { ensureEdgeLight(); el.classList.remove('boost'); el.classList.add('drawing', 'drawn', 'over'); }
+export function settleEdgeLight() { ensureEdgeLight(); stageTimers.forEach(clearTimeout); el.classList.remove('boost'); el.classList.add('s1', 's2', 's3', 'drawing', 'drawn', 'over'); }
 export function endIntroEdge() { if (el) el.classList.remove('over'); }
-export function showEdgeLight() { ensureEdgeLight(); if (!document.body.classList.contains('intro-playing')) el.classList.add('drawing', 'drawn'); }
+export function showEdgeLight() { ensureEdgeLight(); if (!document.body.classList.contains('intro-playing')) el.classList.add('s1', 's2', 's3', 'drawing', 'drawn'); }

@@ -71,8 +71,7 @@ export function render(main, route) {
         const tile = (v, label, desc) => h('button', { class: `ap-amb ${amb === v ? 'active' : ''}`, onClick: () => set({ ambient: v, backgroundFx: v !== 'off' }) }, h('div', { class: `ap-amb-pv ${v}` }, h('i', { class: 'o1' }), h('i', { class: 'o2' })), h('b', {}, label), h('span', {}, desc));
         body.append(h('div', { class: 'ap-amb-grid' }, tile('vivid', 'Vivid', 'Glowing colour'), tile('subtle', 'Subtle', 'A soft hint'), tile('off', 'Off', 'Solid and calm')),
           row('Frosted glass', h('div', {}, toggle(s.glass, v => set({ glass: v }), {})), 'Blur behind floating bars and panels.'),
-          row('Edge light', h('div', {}, toggle(s.edgeGlow !== false, v => set({ edgeGlow: v }), {})), 'A soft line of light around the screen and key cards.'),
-          row('Edge light colour', segmented([{ value: 'warm', label: 'Warm' }, { value: 'accent', label: 'Accent' }], s.edgeTone || 'warm', v => set({ edgeTone: v }, false))));
+          row('Edge light', h('div', {}, toggle(s.edgeGlow !== false, v => set({ edgeGlow: v }), {})), 'A soft line of light around the screen and key cards.'));
       } else if (apSection === 'text') {
         body.append(
           row('Text size', slider(Math.round(s.fontScale * 100), v => set({ fontScale: v / 100 }, false), { min: 80, max: 130, step: 5, format: v => `${v}%` })),

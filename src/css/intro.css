@@ -40,3 +40,10 @@ body.intro-playing #app { visibility: hidden; }
 .ei-tag { margin-top: 16px; font-size: .72rem; font-weight: 600; letter-spacing: .42em; text-transform: uppercase; color: rgba(255,255,255,.5); opacity: 0; transition: opacity 1s ease .45s; }
 .edge-intro.mark .ei-tag { opacity: 1; }
 .edge-intro .intro-skip { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+
+.intro.edge-intro { background: var(--bg); }
+.edge-intro .ei-title { color: var(--text); }
+.edge-intro .ei-tag { color: var(--text-muted); }
+.edge-intro .ei-logo { background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(0deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent) 50%, color-mix(in srgb, var(--text) 12%, transparent)) border-box; box-shadow: 0 10px 30px -12px var(--accent); }
+.edge-intro .ei-logo::after { background: var(--text); }
+.edge-intro .intro-skip { background: color-mix(in srgb, var(--text) 6%, transparent); border-color: color-mix(in srgb, var(--text) 12%, transparent); color: var(--text-2); }
