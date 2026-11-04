@@ -169,3 +169,11 @@ body.reduced-motion .hm2-card.d0, body.reduced-motion .hm2-mesh i, body.reduced-
 }
 body.tabbar-mode .hm2 { padding-bottom: 0 !important; }
 @media (max-width: 900px) { .hm2-grid { grid-template-columns: 1fr; grid-template-areas: 'hero' 'tiles' 'sets' 'rhythm'; } }
+
+@media (min-width: 901px) and (min-height: 600px) {
+  .hm2-actions { flex-wrap: nowrap; }
+  .hm2-actions .btn-ghost { padding: 0 12px; white-space: nowrap; }
+  .hm2-box .hm2-set { padding: 7px 6px; }
+  .hm2-box .hm2-set-meta { font-size: .76rem; }
+  .hm2-box .hm2-section-head h2 { font-size: 1rem; }
+}
