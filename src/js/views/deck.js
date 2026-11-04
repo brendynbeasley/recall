@@ -11,18 +11,18 @@ import { showDeckOptions } from './deckoptions.js';
 import { quickEditNote } from './editor.js';
 
 export const MODES = [
-  { id: 'flashcards', name: 'Flashcards', icon: 'cards', desc: 'Flip through cards at your own pace', color: '#6366f1' },
-  { id: 'learn', name: 'Learn', icon: 'brain', desc: 'Adaptive multiple choice and written rounds', color: '#8b5cf6' },
-  { id: 'test', name: 'Test', icon: 'edit', desc: 'A graded practice exam you configure', color: '#ec4899' },
-  { id: 'write', name: 'Write', icon: 'type', desc: 'Type every answer until you get it right', color: '#f59e0b' },
-  { id: 'spell', name: 'Spell', icon: 'volume', desc: 'Listen and type what you hear', color: '#14b8a6' },
-  { id: 'review', name: 'Spaced review', icon: 'clock', desc: 'Anki-style scheduling: Again · Hard · Good · Easy', color: '#10b981' },
+  { id: 'flashcards', short: 'Flip at your pace', name: 'Flashcards', icon: 'cards', desc: 'Flip through cards at your own pace', color: '#6366f1' },
+  { id: 'learn', short: 'Adaptive rounds', name: 'Learn', icon: 'brain', desc: 'Adaptive multiple choice and written rounds', color: '#8b5cf6' },
+  { id: 'test', short: 'Graded practice exam', name: 'Test', icon: 'edit', desc: 'A graded practice exam you configure', color: '#ec4899' },
+  { id: 'write', short: 'Type every answer', name: 'Write', icon: 'type', desc: 'Type every answer until you get it right', color: '#f59e0b' },
+  { id: 'spell', short: 'Listen and type', name: 'Spell', icon: 'volume', desc: 'Listen and type what you hear', color: '#14b8a6' },
+  { id: 'review', short: 'Spaced repetition', name: 'Anki', icon: 'clock', desc: 'Spaced repetition: Again, Hard, Good, Easy', color: '#10b981' },
 ];
 export const GAMES = [
-  { id: 'match', name: 'Match', icon: 'grid', desc: 'Pair terms and definitions against the clock', color: '#3b82f6' },
-  { id: 'gravity', name: 'Gravity', icon: 'rocket', desc: 'Type answers before the asteroids hit', color: '#f43f5e' },
-  { id: 'memory', name: 'Memory', icon: 'puzzle', desc: 'Concentration: find hidden pairs', color: '#a855f7' },
-  { id: 'blast', name: 'Blast', icon: 'zap', desc: 'Rapid-fire true/false under time pressure', color: '#f97316' },
+  { id: 'match', short: 'Beat the clock', name: 'Match', icon: 'grid', desc: 'Pair terms and definitions against the clock', color: '#3b82f6' },
+  { id: 'gravity', short: 'Stop the asteroids', name: 'Gravity', icon: 'rocket', desc: 'Type answers before the asteroids hit', color: '#f43f5e' },
+  { id: 'memory', short: 'Find the pairs', name: 'Memory', icon: 'puzzle', desc: 'Concentration: find hidden pairs', color: '#a855f7' },
+  { id: 'blast', short: 'Rapid true or false', name: 'Blast', icon: 'zap', desc: 'Rapid-fire true/false under time pressure', color: '#f97316' },
 ];
 
 export function render(main, route) {
@@ -46,15 +46,21 @@ export function render(main, route) {
       h('div', { class: 'sd-bar' }, h('div', { style: { width: pct + '%' } }))));
     // Study actions
     const go = (id) => { if (!pairs.length) { toast('Add some terms first', 'warning'); return; } navigate(`study/${id}/${deck.id}`); };
-    const primaryId = dueTotal ? 'review' : 'learn';
-    const chip = (mo) => h('button', { class: 'sd-chip', style: { '--mode-color': mo.color }, onClick: () => go(mo.id) }, svgIcon(mo.icon, 18), mo.name);
-    const main3 = MODES.filter(x => ['flashcards', 'learn', 'test'].includes(x.id));
-    const extras = [...MODES.filter(x => ['write', 'spell', 'review'].includes(x.id) && x.id !== primaryId), ...GAMES];
-    const moreBox = h('div', { class: 'sd-more' }, ...extras.map(chip));
-    inner.append(h('div', { class: 'sd-study' },
-      h('button', { class: 'btn btn-primary btn-lg sd-primary', onClick: () => go(primaryId) }, svgIcon(dueTotal ? 'brain' : 'zap', 18), dueTotal ? `Study ${dueTotal} due` : 'Study'),
-      h('div', { class: 'sd-chips' }, ...main3.map(chip)),
-      moreBox));
+    const tile = (mo) => h('button', { class: 'sx-tile', style: { '--mode-color': mo.color }, onClick: () => go(mo.id) },
+      h('span', { class: 'sx-icon' }, svgIcon(mo.icon, 20)),
+      h('span', { class: 'sx-text' }, h('span', { class: 'sx-name' }, mo.name, mo.id === 'review' && dueTotal ? h('span', { class: 'sx-badge' }, dueTotal) : null), h('span', { class: 'sx-sub' }, mo.short || '')));
+    const order = ['review', 'flashcards', 'learn', 'test', 'write', 'spell'];
+    const studyModes = order.map(id => MODES.find(x => x.id === id)).filter(Boolean);
+    const count = (n, l, c) => h('div', { class: 'sx-count' }, h('b', { style: { color: n ? c : 'var(--text-faint)' } }, n), h('span', {}, l));
+    inner.append(h('div', { class: 'sx-wrap' },
+      h('div', { class: 'sx-today' },
+        h('div', { class: 'sx-today-text' }, h('div', { class: 'sx-today-title' }, dueTotal ? 'Ready for today' : 'All caught up'), h('div', { class: 'sx-today-sub' }, dueTotal ? 'Anki review keeps these cards fresh.' : 'Nothing due. Practise any mode below.')),
+        h('div', { class: 'sx-counts' }, count(due.new, 'New', 'var(--accent)'), count(due.learn, 'Learning', 'var(--warn)'), count(due.review, 'Review', 'var(--ok)')),
+        h('button', { class: 'sx-start', onClick: () => go(dueTotal ? 'review' : 'learn') }, svgIcon(dueTotal ? 'play' : 'zap', 16), dueTotal ? 'Start review' : 'Learn')),
+      h('div', { class: 'sx-label' }, 'Study'),
+      h('div', { class: 'sx-grid' }, ...studyModes.map(tile)),
+      h('div', { class: 'sx-label' }, 'Games'),
+      h('div', { class: 'sx-grid sx-games' }, ...GAMES.map(tile))));
     // Preview + progress
     const prev = h('div', { class: 'set-preview' });
     if (pairs.length) {
