@@ -32,8 +32,9 @@ export async function start(ctx) {
   }
   function slotsView() {
     const wrap = h('div', { class: 'us-slots' });
-    if (cur._byWord) cur._target.forEach((w, k) => wrap.append(h('span', { class: `us-slot word ${built[k] ? 'filled' : ''}` }, built[k] ? built[k].t : ' ')));
-    else { let k = 0; cur._words.forEach(w => { const g = h('span', { class: 'us-word' }); for (let c = 0; c < w.length; c++) { g.append(h('span', { class: `us-slot ${built[k] ? 'filled' : ''}` }, built[k] ? built[k].t : '')); k++; } wrap.append(g); }); }
+    const slot = (k, cls) => h('button', { class: `us-slot ${cls} ${built[k] ? 'filled' : ''} ${k === 0 && !built[0] ? 'start' : ''}`, onClick: () => removeAt(k) }, built[k] ? built[k].t : (cls === 'word' ? '\u00a0' : ''));
+    if (cur._byWord) cur._target.forEach((w, k) => wrap.append(slot(k, 'word')));
+    else { let k = 0; cur._words.forEach(w => { const g = h('span', { class: 'us-word' }); for (let c = 0; c < w.length; c++) { g.append(slot(k, '')); k++; } wrap.append(g); }); }
     return wrap;
   }
   function draw() {
