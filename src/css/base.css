@@ -490,3 +490,7 @@ body.no-edge-glow .edge-light { display: none; }
 .edge-light.drawn:not(.boost) .el-wash { animation: elBreathe 7s ease-in-out infinite; }
 @keyframes elBreathe { 0%, 100% { opacity: .8; } 50% { opacity: 1; } }
 body.reduced-motion .edge-light .el-wash { animation: none !important; }
+
+.edge-light.boost .el-line { stroke-width: 2; }
+.edge-light.boost .el-glow { stroke-width: 10; opacity: 1; }
+.edge-light.boost .el-wash { box-shadow: inset 0 0 120px color-mix(in srgb, var(--accent) 55%, transparent), inset 0 0 28px color-mix(in srgb, var(--accent) 45%, transparent); }
