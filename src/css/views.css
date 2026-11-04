@@ -318,3 +318,8 @@ mark { background: var(--warn-soft); color: inherit; border-radius: 3px; padding
 .sd-more-btn { align-self: center; background: none; border: 0; color: var(--text-muted); font-size: .85rem; padding: 4px 8px; cursor: pointer; }
 .sd-more-btn:hover { color: var(--text); }
 .sd-head ~ .terms-head, .sd-head ~ .terms-list, .sd-head ~ .btn-block { max-width: 860px; margin-left: auto; margin-right: auto; }
+
+.sd-chips { grid-template-columns: repeat(3, 1fr); }
+.sd-more { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+.sd-more .sd-chip { height: 40px; font-size: .88rem; font-weight: 500; }
+.sd-study ~ .set-mid { max-width: 860px; margin-left: auto; margin-right: auto; }
