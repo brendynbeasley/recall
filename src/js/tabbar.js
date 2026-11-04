@@ -58,14 +58,13 @@ function moveLensTo(id, { instant = false } = {}) {
   const b = id && st.btns.get(id); const s = st.spring;
   if (!b || b.classList.contains('primary')) { st.lens.style.opacity = '0'; return; }
   st.lens.style.opacity = '1';
-  const tr = st.track.getBoundingClientRect(), r = b.getBoundingClientRect();
-  s.tx = r.left - tr.left; s.tw = r.width;
+  s.tx = b.offsetLeft; s.tw = b.offsetWidth; // layout units: unaffected by the bar's condense scale
   if (instant || reduced() || !s.w) { s.x = s.tx; s.w = s.tw; s.vx = s.vw = 0; paint(0); return; }
   kick();
 }
 function followX(clientX) { // drag: lens centre tracks the finger
-  const s = st.spring, tr = st.track.getBoundingClientRect(); const w = s.tw || 60;
-  s.tx = Math.max(0, Math.min(tr.width - w, clientX - tr.left - w / 2)); kick();
+  const s = st.spring, tr = st.track.getBoundingClientRect(); const k = tr.width / st.track.offsetWidth || 1; const w = s.tw || 60;
+  s.tx = Math.max(0, Math.min(st.track.offsetWidth - w, (clientX - tr.left) / k - w / 2)); kick();
 }
 function kick() { if (!st.spring.raf) { st.spring.last = performance.now(); st.spring.raf = requestAnimationFrame(step); } }
 function step(t) {
