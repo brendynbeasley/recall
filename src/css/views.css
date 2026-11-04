@@ -323,3 +323,20 @@ mark { background: var(--warn-soft); color: inherit; border-radius: 3px; padding
 .sd-more { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
 .sd-more .sd-chip { height: 40px; font-size: .88rem; font-weight: 500; }
 .sd-study ~ .set-mid { max-width: 860px; margin-left: auto; margin-right: auto; }
+
+/* Progress panel: same height as the preview card */
+.set-mid { align-items: start; }
+.pg-panel { height: 320px; display: flex; flex-direction: column; padding: 22px 24px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border); }
+.pg-head { display: flex; justify-content: space-between; align-items: center; }
+.pg-label { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+.pg-link { background: none; border: 0; color: var(--text-muted); font-size: .85rem; cursor: pointer; padding: 0; } .pg-link:hover { color: var(--text); }
+.pg-big { display: flex; align-items: baseline; gap: 8px; margin-top: 18px; }
+.pg-pct { font-size: 2.8rem; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+.pg-sub { color: var(--text-muted); font-size: .95rem; }
+.pg-bar { display: flex; height: 8px; border-radius: 4px; background: var(--surface-3); overflow: hidden; margin-top: 16px; }
+.pg-bar > div { height: 100%; }
+.pg-rows { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.pg-row { display: flex; align-items: center; gap: 10px; font-size: .92rem; color: var(--text-2); }
+.pg-row i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.pg-row span { flex: 1; } .pg-row b { color: var(--text); font-weight: 700; }
+.pg-foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: .85rem; }
